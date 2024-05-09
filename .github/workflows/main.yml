@@ -1,0 +1,31 @@
+name: Deploy WordPress Plugin
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+
+    - name: Install Composer dependencies
+      run: composer install
+
+    - name: Install WP-CLI
+      run: |
+        curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+        chmod +x wp-cli.phar
+        sudo mv wp-cli.phar /usr/local/bin/wp
+
+    - name: Deploy Plugin
+      run: |
+        cd /
+        zip -r your-plugin.zip .
+        wp plugin install your-plugin.zip --activate

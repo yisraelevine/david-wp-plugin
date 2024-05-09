@@ -12,6 +12,7 @@ tr:hover .quick-edit-button {
 
 form {
     display: flex;
+    display: flex;
     flex-direction: column;
     align-items: flex-end;
 }

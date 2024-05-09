@@ -13,59 +13,7 @@ function admin_page()
 
 function page_content()
 {
-    echo '<div class="wrap" style="direction: rtl;">';
-    echo '<style>
-        .quick-edit-button {
-            display: none;
-        }
-
-        tr:hover .quick-edit-button {
-            display: inline-block;
-        }
-        </style>';
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'stories';
-
-    echo '<h1>סיפורים</h1>
-    <h2>הוספת סיפור</h2>
-    <form method="post" action="">
-        <label for="name">שם:</label>
-        <input type="text" id="name" name="name">
-        <br>
-        <br>
-        <label for="url">קישור:</label>
-        <input type="text" id="url" name="url">
-        <br>
-        <br>
-        <label for="new">חדש:</label>
-        <input type="checkbox" id="new" name="new">
-        <br>
-        <br>
-        <label for="phone">טלפון:</label>
-        <input type="checkbox" id="phone" name="phone">
-        <br>
-        <br>
-        ' . wp_nonce_field('add_new_row_action', 'add_new_row_nonce') . '
-        <input type="submit" name="submit" value="הוספה">
-    </form>';
-
-    if (isset($_POST['submit']) && wp_verify_nonce($_POST['add_new_row_nonce'], 'add_new_row_action')) {
-        $wpdb->insert(
-            $table_name,
-            array(
-                'name' => $_POST['name'],
-                'url' => $_POST['url'],
-                'new' => $_POST['new'] === 'on',
-                'phone' => $_POST['phone'] === 'on'
-            )
-        );
-
-        if ($wpdb->insert_id) {
-            echo '<div class="updated"><p>הסיפור נוסף בהצלחה!</p></div>';
-        } else {
-            echo '<div class="error"><p>אירע שגיאה בהוספת הסיפור!</p></div>';
-        }
-    }
+    include_once('add-new-row.php');
 
     class Stories extends WP_List_Table
     {

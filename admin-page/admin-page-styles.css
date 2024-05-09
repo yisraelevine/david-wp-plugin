@@ -15,12 +15,16 @@ tr:hover .quick-edit-button {
     grid-template-columns: max-content auto;
     gap: 10px;
     max-width: 400px;
+    
 }
 
 .form-grid label {
     grid-column: 1;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .form-grid input {
     grid-column: 2;
+    margin: 0;
 }

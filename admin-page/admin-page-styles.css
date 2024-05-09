@@ -9,3 +9,18 @@
 tr:hover .quick-edit-button {
     display: inline-block;
 }
+
+.form-grid {
+    display: grid;
+    grid-template-columns: max-content auto;
+    gap: 10px;
+}
+
+.form-grid label {
+    grid-column: 1 / span 1;
+    text-align: right;
+}
+
+.form-grid input {
+    grid-column: 2 / span 1;
+}

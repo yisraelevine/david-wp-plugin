@@ -1,25 +1,15 @@
 <h2>הוספת סיפור</h2>
-<form method="post">
-    <div>
-        <label for="name">שם:</label>
-        <input type="text" id="name" name="name">
-    </div>
-    <div>
-        <label for="url">קישור:</label>
-        <input type="text" id="url" name="url">
-    </div>
-    <div>
-        <label for="new">חדש:</label>
-        <input type="checkbox" id="new" name="new">
-    </div>
-    <div>
-        <label for="phone">טלפון:</label>
-        <input type="checkbox" id="phone" name="phone">
-    </div>
-    <div>
-        <?php wp_nonce_field('add_new_row_action', 'add_new_row_nonce') ?>
-        <input type="submit" name="submit" value="הוספה">
-    </div>
+<form method="post" action="" class="form-grid">
+    <label for="name">שם:</label>
+    <input type="text" id="name" name="name">
+    <label for="url">קישור:</label>
+    <input type="text" id="url" name="url">
+    <label for="new">חדש:</label>
+    <input type="checkbox" id="new" name="new">
+    <label for="phone">טלפון:</label>
+    <input type="checkbox" id="phone" name="phone">
+    <?php wp_nonce_field('add_new_row_action', 'add_new_row_nonce') ?>
+    <input type="submit" name="submit" value="הוספה">
 </form>
 
 <?php

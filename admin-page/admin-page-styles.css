@@ -15,7 +15,6 @@ tr:hover .quick-edit-button {
     grid-template-columns: max-content auto;
     gap: 10px;
     max-width: 400px;
-    
 }
 
 .form-grid label {
@@ -27,4 +26,8 @@ tr:hover .quick-edit-button {
 .form-grid input {
     grid-column: 2;
     margin: 0;
+}
+
+#url {
+    direction: ltr;
 }

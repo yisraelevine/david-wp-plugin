@@ -14,13 +14,13 @@ tr:hover .quick-edit-button {
     display: grid;
     grid-template-columns: max-content auto;
     gap: 10px;
+    max-width: 400px;
 }
 
 .form-grid label {
-    grid-column: 1 / span 1;
-    text-align: right;
+    grid-column: 1;
 }
 
 .form-grid input {
-    grid-column: 2 / span 1;
+    grid-column: 2;
 }

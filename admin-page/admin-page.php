@@ -14,7 +14,7 @@ function admin_page()
 function page_content()
 {
     include_once ('add-new-row.php');
-    include_once ('stories-list-table');
+    include_once ('stories-list-table.php');
 }
 
 add_action('admin_menu', 'admin_page');

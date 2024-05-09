@@ -1,0 +1,11 @@
+#admin-page_content {
+    direction: rtl;
+}
+
+.quick-edit-button {
+    display: none;
+}
+
+tr:hover .quick-edit-button {
+    display: inline-block;
+}

@@ -83,22 +83,11 @@ class Stories extends WP_List_Table
 
 ?>
 
-<div class="wrap" style="direction: rtl;">
-    <style>
-        .quick-edit-button {
-            display: none;
-        }
-
-        tr:hover .quick-edit-button {
-            display: inline-block;
-        }
-    </style>
-    <h2>רשימת סיפורים</h2>
-    <form method="post">
-        <?php
-        $stories = new Stories();
-        $stories->prepare_items();
-        $stories->display();
-        ?>
-    </form>
-</div>
+<h2>רשימת סיפורים</h2>
+<form method="post">
+    <?php
+    $stories = new Stories();
+    $stories->prepare_items();
+    $stories->display();
+    ?>
+</form>

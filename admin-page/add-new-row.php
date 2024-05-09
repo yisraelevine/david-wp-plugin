@@ -1,15 +1,3 @@
-<div class="wrap" style="direction: rtl;">
-<style>
-    .quick-edit-button {
-        display: none;
-    }
-
-    tr:hover .quick-edit-button {
-        display: inline-block;
-    }
-</style>';
-
-<h1>סיפורים</h1>
 <h2>הוספת סיפור</h2>
 <form method="post" action="">
     <div>
@@ -32,7 +20,7 @@
         <div>
         <input type="submit" name="submit" value="הוספה">
     </div>
-</form>';
+</form>
 
 <?php
 

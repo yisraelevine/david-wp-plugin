@@ -1,6 +1,6 @@
 <?php
 
-function create_table()
+function create_stories_table()
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'stories';
@@ -18,8 +18,8 @@ function create_table()
     dbDelta($sql);
 }
 
-function activate_plugin()
+function activate_stories_plugin()
 {
-    create_table();
+    create_stories_table();
 }
-register_activation_hook(__FILE__, 'activate_plugin');
+register_activation_hook(__FILE__, 'activate_stories_plugin');

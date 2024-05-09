@@ -9,7 +9,6 @@
     <label for="phone">טלפון:</label>
     <input type="checkbox" id="phone" name="phone">
     <?php wp_nonce_field('add_new_row_action', 'add_new_row_nonce') ?>
-    <div>
     <input type="submit" name="submit" value="הוספה">
 </form>
 

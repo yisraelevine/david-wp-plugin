@@ -153,7 +153,7 @@ function page_content()
     $stories = new Stories();
     $stories->prepare_items();
 
-    echo '<h2>רשימת סיפורים</h2>';
+    echo '<h2>רשימת יפורים</h2>';
     echo '<form method="post">';
     $stories->display();
     echo '</form>';

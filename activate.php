@@ -1,6 +1,7 @@
 <?php
 
-function create_stories_table() {
+function create_table()
+{
     global $wpdb;
     $table_name = $wpdb->prefix . 'stories';
 
@@ -12,12 +13,13 @@ function create_stories_table() {
         phone BIT NOT NULL
     )";
 
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
 
     dbDelta($sql);
 }
 
-function activate_stories_plugin() {
-    create_stories_table();
+function activate_plugin()
+{
+    create_table();
 }
-register_activation_hook(__FILE__, 'activate_stories_plugin');
+register_activation_hook(__FILE__, 'activate_plugin');

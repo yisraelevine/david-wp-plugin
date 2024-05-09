@@ -1,6 +1,7 @@
 <?php
 
-function delete_stories_table() {
+function delete_stories_table()
+{
     global $wpdb;
     $table_name = $wpdb->prefix . 'stories';
 
@@ -9,7 +10,8 @@ function delete_stories_table() {
     $wpdb->query($sql);
 }
 
-function deactivate_stories_plugin() {
+function deactivate_stories_plugin()
+{
     delete_stories_table();
 }
 register_deactivation_hook(__FILE__, 'deactivate_stories_plugin');

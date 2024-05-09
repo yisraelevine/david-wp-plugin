@@ -6,8 +6,8 @@ Version: 1.0
 Author: Yisrael Levine
 */
 
-require_once('activate-stories.php');
-require_once('deactivate-stories.php');
+require_once ('activate.php');
+require_once ('deactivate.php');
 
 function admin_page()
 {
@@ -113,13 +113,13 @@ function page_content()
 
         function column_default($item, $column_name)
         {
-            switch ( $column_name ) {
-                
+            switch ($column_name) {
+
                 case 'new':
                 case 'phone':
-                    return '<input type="checkbox"' . ( $item[$column_name] ? 'checked' : '' ) . '>';
+                    return '<input type="checkbox"' . ($item[$column_name] ? 'checked' : '') . '>';
                 case 'name':
-                    return '<div>' . $item[$column_name] . '</div>' . $this->add_quick_edit_button( $item );
+                    return '<div>' . $item[$column_name] . '</div>' . $this->add_quick_edit_button($item);
                 default:
                     return $item[$column_name];
             }
@@ -153,7 +153,8 @@ function page_content()
                 }
             }
         }
-        function add_quick_edit_button( $item ) {
+        function add_quick_edit_button($item)
+        {
             return '<button class="quick-edit-button" data-item-id="' . $item->id . '">Quick Edit</button>';
         }
     }

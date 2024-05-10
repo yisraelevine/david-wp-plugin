@@ -22,4 +22,3 @@ function activate_stories_plugin()
 {
     create_stories_table();
 }
-register_activation_hook(__FILE__, 'activate_stories_plugin');

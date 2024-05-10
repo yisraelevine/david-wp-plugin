@@ -13,5 +13,6 @@ function delete_stories_table()
 function deactivate_stories_plugin()
 {
     delete_stories_table();
+    echo 'Deactivated!';
 }
 register_deactivation_hook(__FILE__, 'deactivate_stories_plugin');

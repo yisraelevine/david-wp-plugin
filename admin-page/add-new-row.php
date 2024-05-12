@@ -25,8 +25,8 @@ if (isset($_POST['submit']) && wp_verify_nonce($_POST['add_new_row_nonce'], 'add
 
     $name = sanitize_text_field($_POST['name']);
     $url = esc_url($_POST['url']);
-    $is_new = isset($_POST['new']) ? 1 : 0;
-    $is_phone = isset($_POST['phone']) ? 1 : 0;
+    $is_new = isset($_POST['new']);
+    $is_phone = isset($_POST['phone']);
 
     $wpdb->insert(
         $table_name,

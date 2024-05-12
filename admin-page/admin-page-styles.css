@@ -31,3 +31,8 @@ tr:hover .quick-edit-button {
 #url {
     direction: ltr;
 }
+
+.form-grid.view input[type=checkbox] {
+    border: none;
+    box-shadow: none;
+}

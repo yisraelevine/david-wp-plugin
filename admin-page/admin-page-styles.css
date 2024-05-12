@@ -35,4 +35,6 @@ tr:hover .quick-edit-button {
 form.view-mode input[type=checkbox] {
     border: none;
     box-shadow: none;
+    background-color: unset;
+    pointer-events: none;
 }

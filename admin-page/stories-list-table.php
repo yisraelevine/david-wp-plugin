@@ -78,7 +78,7 @@ class Stories extends WP_List_Table
 ?>
 
 <h2>רשימת סיפורים</h2>
-<form method="post">
+<form method="post" class="view-mode">
     <?php
     $stories = new Stories();
     $stories->prepare_items();

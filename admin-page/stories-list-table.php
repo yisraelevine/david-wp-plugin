@@ -40,8 +40,6 @@ class Stories extends WP_List_Table
             case 'new':
             case 'phone':
                 return '<input type="checkbox"' . ($item[$column_name] ? 'checked' : '') . '>';
-            case 'name':
-                return '<div>' . $item[$column_name] . '</div>' . $this->add_quick_edit_button($item);
             default:
                 return $item[$column_name];
         }
@@ -74,10 +72,6 @@ class Stories extends WP_List_Table
                 echo '<script>window.location.reload();</script>';
             }
         }
-    }
-    function add_quick_edit_button($item)
-    {
-        return '<button class="quick-edit-button" data-item-id="' . $item->id . '">Quick Edit</button>';
     }
 }
 

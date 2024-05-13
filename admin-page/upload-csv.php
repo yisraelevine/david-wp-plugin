@@ -1,5 +1,5 @@
 <form method="post" enctype="multipart/form-data">
-    <input type="file" name="csv_file" />
+    <input type="file" name="csv_file" accept=".csv" />
     <input type="submit" name="submit" value="Upload CSV" />
 </form>
 
@@ -9,7 +9,7 @@ if (isset($_FILES['csv_file']['tmp_name'])) {
 
     if (($handle = fopen($csv_file_path, "r")) !== FALSE) {
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-            echo $data;
+            echo explode(',', $data);
         }
         fclose($handle);
     }

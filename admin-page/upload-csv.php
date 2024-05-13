@@ -1,3 +1,8 @@
+<form method="post" enctype="multipart/form-data">
+    <input type="file" name="csv_file" accept=".csv" />
+    <input type="submit" name="submit" value="Upload CSV" />
+</form>
+
 <?php
 if (isset($_FILES['csv_file']['tmp_name']) && !empty($_FILES['csv_file']['tmp_name'])) {
     $csv_file_path = $_FILES['csv_file']['tmp_name'];
@@ -36,4 +41,3 @@ if (isset($_FILES['csv_file']['tmp_name']) && !empty($_FILES['csv_file']['tmp_na
 } else {
     echo "Please upload a CSV file.";
 }
-?>

@@ -18,6 +18,7 @@ function page_content()
     ?>
     <div class="wrap" id="admin-page_content">
         <?php
+        include_once ('upload-csv.php');
         include_once ('add-new-row.php');
         include_once ('stories-list-table.php');
         ?>

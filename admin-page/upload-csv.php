@@ -33,6 +33,7 @@ if (isset($_FILES['csv_file']['tmp_name']) && !empty($_FILES['csv_file']['tmp_na
 
         if (!empty($value_placeholders)) {
             $sql .= implode(", ", $value_placeholders);
+            echo $sql;
             $wpdb->query($sql);
         }
 

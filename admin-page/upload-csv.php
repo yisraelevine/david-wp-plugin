@@ -1,6 +1,7 @@
+<h2>העלאת סיפורים CSV</h2>
 <form method="post" enctype="multipart/form-data">
     <input type="file" name="csv_file" accept=".csv" />
-    <input type="submit" name="submit" value="Upload CSV" />
+    <input type="submit" name="submit" value="העלה CSV" />
 </form>
 
 <?php
@@ -15,12 +16,11 @@ if (isset($_FILES['csv_file']['tmp_name']) && !empty($_FILES['csv_file']['tmp_na
         $value_placeholders = array();
 
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-            echo "1";
             if (count($data) != 4) {
                 continue;
             }
 
-            $value_placeholders[] = $wpdb->prepare("(%s, %s, %s, %s)", $data[0], $data[1], $data[2] == 1, $data[3] == 1);
+            $value_placeholders[] = $wpdb->prepare("(%s, %s, %d, %d)", $data[0], $data[1], $data[2] == 1, $data[3] == 1);
 
             if (count($value_placeholders) >= 1000) {
                 $sql .= implode(", ", $value_placeholders);
@@ -39,8 +39,8 @@ if (isset($_FILES['csv_file']['tmp_name']) && !empty($_FILES['csv_file']['tmp_na
 
         fclose($handle);
     } else {
-        echo "Error opening CSV file.";
+        echo "שגיאה בפתיחת קובץ CSV.";
     }
 } else {
-    echo "Please upload a CSV file.";
+    echo "נא להעלות קובץ CSV.";
 }

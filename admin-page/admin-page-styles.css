@@ -32,7 +32,7 @@ tr:hover .quick-edit-button {
     direction: ltr;
 }
 
-form.view-mode tbody td input[type=checkbox] {
+.view-mode tbody td input[type=checkbox] {
     border: none;
     box-shadow: none;
     background-color: unset;

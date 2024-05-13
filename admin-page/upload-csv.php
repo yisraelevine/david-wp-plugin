@@ -17,8 +17,8 @@ if (isset($_FILES['csv_file']['tmp_name'])) {
                 array(
                     'name' => $data[0],
                     'url' => $data[1],
-                    'new' => $data[2] === 1,
-                    'phone' => $data[3] === 1
+                    'new' => $data[2] == 1,
+                    'phone' => $data[3] == 1
                 )
             );
         }

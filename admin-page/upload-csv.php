@@ -19,7 +19,7 @@ if (isset($_FILES['csv_file']['tmp_name']) && !empty($_FILES['csv_file']['tmp_na
                 continue;
             }
 
-            $value_placeholders[] = $wpdb->prepare("(%s, %s, %b, %b)", $data[0], $data[1], $data[2] == 1, $data[3] == 1);
+            $value_placeholders[] = $wpdb->prepare("(%s, %s, %d, %d)", $data[0], $data[1], $data[2] == 1, $data[3] == 1);
 
             if (count($value_placeholders) >= 1000) {
                 $sql .= implode(", ", $value_placeholders);

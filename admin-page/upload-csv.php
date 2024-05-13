@@ -9,7 +9,7 @@ if (isset($_FILES['csv_file']['tmp_name'])) {
 
     if (($handle = fopen($csv_file_path, "r")) !== FALSE) {
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-            echo explode(',', $data);
+            echo implode(',', $data);
         }
         fclose($handle);
     }

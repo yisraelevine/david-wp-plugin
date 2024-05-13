@@ -15,6 +15,7 @@ if (isset($_FILES['csv_file']['tmp_name']) && !empty($_FILES['csv_file']['tmp_na
         $value_placeholders = array();
 
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            echo "1";
             if (count($data) != 4) {
                 continue;
             }

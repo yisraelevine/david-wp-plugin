@@ -24,7 +24,6 @@ if (isset($_FILES['csv_file']['tmp_name']) && !empty($_FILES['csv_file']['tmp_na
 
             if (count($value_placeholders) >= 1000) {
                 $sql .= implode(", ", $value_placeholders);
-                echo $sql;
                 $wpdb->query($sql);
                 $sql = "INSERT INTO $table_name (name, url, new, phone) VALUES ";
                 $value_placeholders = array();
@@ -33,7 +32,6 @@ if (isset($_FILES['csv_file']['tmp_name']) && !empty($_FILES['csv_file']['tmp_na
 
         if (!empty($value_placeholders)) {
             $sql .= implode(", ", $value_placeholders);
-            echo $sql;
             $wpdb->query($sql);
         }
 

@@ -24,7 +24,7 @@ input[type=url] {
     margin: 0;
 }
 
-.view-mode tbody td input[type=checkbox] {
+.view-mode tbody td input {
     border: none;
     box-shadow: none;
     background-color: unset;
@@ -51,7 +51,7 @@ input[type=url] {
         right: 10px;
         float: inline-start;
     }
-    
+
     tbody td input {
         float: inline-end;
     }

@@ -6,23 +6,18 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 
 class Stories extends WP_List_Table
 {
+    protected function display_tablenav( $which ) {
+        if ( ! $this->has_items() ) {
+            return;
+        }
+
+        parent::display_tablenav( $which );
+    }
+
     protected function bulk_actions( $which = '' ) {
 		if ( is_null( $this->_actions ) ) {
 			$this->_actions = $this->get_bulk_actions();
-
-			/**
-			 * Filters the items in the bulk actions menu of the list table.
-			 *
-			 * The dynamic portion of the hook name, `$this->screen->id`, refers
-			 * to the ID of the current screen.
-			 *
-			 * @since 3.1.0
-			 * @since 5.6.0 A bulk action can now contain an array of options in order to create an optgroup.
-			 *
-			 * @param array $actions An array of the available bulk actions.
-			 */
 			$this->_actions = apply_filters( "bulk_actions-{$this->screen->id}", $this->_actions ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
-
 			$two = '';
 		} else {
 			$two = '2';
@@ -33,7 +28,6 @@ class Stories extends WP_List_Table
 		}
 
 		echo '<label for="bulk-action-selector-' . esc_attr( $which ) . '" class="screen-reader-text">' .
-			/* translators: Hidden accessibility text. */
 			__( 'בחר פעולה' ) .
 		'</label>';
 		echo '<select name="action' . $two . '" id="bulk-action-selector-' . esc_attr( $which ) . "\">\n";
@@ -119,7 +113,6 @@ class Stories extends WP_List_Table
 					"<span aria-hidden='true'>%s</span>" .
 				'</a>',
 				esc_url( remove_query_arg( 'paged', $current_url ) ),
-				/* translators: Hidden accessibility text. */
 				__( 'First page' ),
 				'&laquo;'
 			);
@@ -134,7 +127,6 @@ class Stories extends WP_List_Table
 					"<span aria-hidden='true'>%s</span>" .
 				'</a>',
 				esc_url( add_query_arg( 'paged', max( 1, $current - 1 ), $current_url ) ),
-				/* translators: Hidden accessibility text. */
 				__( 'Previous page' ),
 				'&lsaquo;'
 			);
@@ -146,7 +138,6 @@ class Stories extends WP_List_Table
 				'<span class="screen-reader-text">%s</span>' .
 				'<span id="table-paging" class="paging-input">' .
 				'<span class="tablenav-paging-text">',
-				/* translators: Hidden accessibility text. */
 				__( 'Current Page' )
 			);
 		} else {
@@ -155,7 +146,6 @@ class Stories extends WP_List_Table
 				"<input class='current-page' id='current-page-selector' type='text'
 					name='paged' value='%s' size='%d' aria-describedby='table-paging' />" .
 				"<span class='tablenav-paging-text'>",
-				/* translators: Hidden accessibility text. */
 				__( 'Current Page' ),
 				$current,
 				strlen( $total_pages )
@@ -165,7 +155,6 @@ class Stories extends WP_List_Table
 		$html_total_pages = sprintf( "<span class='total-pages'>%s</span>", number_format_i18n( $total_pages ) );
 
 		$page_links[] = $total_pages_before . sprintf(
-			/* translators: 1: Current page, 2: Total pages. */
 			_x( '%1$s מתוך %2$s', 'paging' ),
 			$html_current_page,
 			$html_total_pages
@@ -180,7 +169,6 @@ class Stories extends WP_List_Table
 					"<span aria-hidden='true'>%s</span>" .
 				'</a>',
 				esc_url( add_query_arg( 'paged', min( $total_pages, $current + 1 ), $current_url ) ),
-				/* translators: Hidden accessibility text. */
 				__( 'Next page' ),
 				'&rsaquo;'
 			);
@@ -195,7 +183,6 @@ class Stories extends WP_List_Table
 					"<span aria-hidden='true'>%s</span>" .
 				'</a>',
 				esc_url( add_query_arg( 'paged', $total_pages, $current_url ) ),
-				/* translators: Hidden accessibility text. */
 				__( 'Last page' ),
 				'&raquo;'
 			);

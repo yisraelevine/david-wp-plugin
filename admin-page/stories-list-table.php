@@ -20,9 +20,9 @@ class Stories extends WP_List_Table
         }
 
         $pagination_text = sprintf( __( 'Showing %1$s to %2$s of %3$s items', 'textdomain' ),
-            number_format_i18n( $this->get_pagination_arg( 'start_item' ) ),
-            number_format_i18n( $this->get_pagination_arg( 'end_item' ) ),
-            number_format_i18n( $total_items )
+            $this->get_pagination_arg( 'start_item' ),
+            $this->get_pagination_arg( 'end_item' ),
+            $total_items
         );
         echo $total_pages;
         ?>

@@ -33,6 +33,7 @@ input[type=url] {
 
 .tablenav .bulkactions {
     float: inline-start;
+    padding: 0 0 0 8px;
 }
 
 .tablenav .tablenav-pages {

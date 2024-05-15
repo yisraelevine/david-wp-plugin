@@ -143,6 +143,7 @@ class Stories extends WP_List_Table
 				'&rsaquo;'
 			);
 		}
+    }
     
     function prepare_items()
     {

@@ -9,9 +9,8 @@ function register_custom_endpoint() {
 }
 
 function list_endpoint_callback($data) {
-    $response = array(
-        'message' => 'This is a custom endpoint response',
-        'data_received' => $data,
-    );
-    return rest_ensure_response($response);
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'stories';
+    $results = $wpdb->get_results("SELECT id, name, new, phone FROM $table_name", ARRAY_A);
+    return $results;
 }

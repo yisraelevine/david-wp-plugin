@@ -287,6 +287,10 @@ class Stories extends WP_List_Table
             }
         }
     }
+
+    function no_items() {
+        _e( 'לא נמצאו סיפורים.', 'textdomain' );
+    }
 }
 
 ?>

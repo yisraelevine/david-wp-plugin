@@ -11,6 +11,8 @@ function register_custom_endpoint() {
 function list_endpoint_callback($data) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'stories';
-    $results = string() $wpdb->get_results("SELECT id, name, new, phone FROM $table_name", ARRAY_A);
-    return $results;
+    $results = $wpdb->get_results("SELECT id, name, new, phone FROM $table_name", ARRAY_A);
+    $json_string = json_encode($results);
+    $decoded_array = json_decode($json_string, true);
+    return $decoded_array;
 }

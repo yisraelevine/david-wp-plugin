@@ -73,7 +73,6 @@ class Stories extends WP_List_Table
 		}
 
 		$output = '<span class="displaying-num">' . sprintf(
-			/* translators: %s: Number of items. */
 			_n( 'סיפור %s', '%s סיפורים', $total_items ),
 			number_format_i18n( $total_items )
 		) . '</span>';
@@ -209,7 +208,7 @@ class Stories extends WP_List_Table
         global $wpdb;
         $table_name = $wpdb->prefix . 'stories';
 
-        $per_page = 100;
+        $per_page = 50;
         $current_page = $this->get_pagenum();
         $total_items = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
 

@@ -142,6 +142,7 @@ class Stories extends WP_List_Table
 				'&rsaquo;'
 			);
 		}
+        echo $output;
     }
     
     function prepare_items()

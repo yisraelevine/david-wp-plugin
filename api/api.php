@@ -12,5 +12,6 @@ function list_endpoint_callback($data) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'stories';
     $results = $wpdb->get_results("SELECT id, name, new, phone FROM $table_name", ARRAY_A);
-    return $results;
+    $decoded_string = json_decode('"' . $results . '"');
+    return $decoded_string;
 }

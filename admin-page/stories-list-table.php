@@ -230,9 +230,7 @@ class Stories extends WP_List_Table
 
         $this->set_pagination_args([
             'per_page' => $per_page,
-            'total_items' => $total_items,
-            'start_item' => $start_item,
-            'end_item' => $end_item
+            'total_items' => $total_items
         ]);
 
         $this->_column_headers = array($this->get_columns());

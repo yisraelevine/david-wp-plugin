@@ -7,7 +7,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 class Stories extends WP_List_Table
 {
     protected function display_tablenav( $which ) {
-        if ( ! $this->has_items() ) {
+        if ( $which === 'top' && ! $this->has_items() ) {
             return;
         }
 

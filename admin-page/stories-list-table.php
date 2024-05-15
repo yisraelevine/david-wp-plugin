@@ -12,7 +12,9 @@ class Stories extends WP_List_Table
         }
 
         $total_items = $this->_pagination_args['total_items'];
-        $total_pages = $this->_pagination_args['total_pages']; 
+        $total_pages = $this->_pagination_args['total_pages'];
+        $start_item = $this->_pagination_args['start_item'];
+        $end_item = $this->_pagination_args['end_item'];
         $infinite_scroll = false;
 
         if ( 'top' === $which && $total_pages > 1 ) {
@@ -20,8 +22,8 @@ class Stories extends WP_List_Table
         }
 
         $pagination_text = sprintf( __( 'Showing %1$s to %2$s of %3$s items', 'textdomain' ),
-            $this->get_pagination_arg( 'start_item' ),
-            $this->get_pagination_arg( 'end_item' ),
+            $start_item,
+            $total_pages,
             $total_items
         );
         ?>

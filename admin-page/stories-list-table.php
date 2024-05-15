@@ -24,7 +24,7 @@ class Stories extends WP_List_Table
 
 		$output = '<span class="displaying-num">' . sprintf(
 			/* translators: %s: Number of items. */
-			_n( '%s item', '%s items', $total_items ),
+			_n( 'סיפור %s', '%s סיפורים', $total_items ),
 			number_format_i18n( $total_items )
 		) . '</span>';
 
@@ -110,7 +110,7 @@ class Stories extends WP_List_Table
 
 		$page_links[] = $total_pages_before . sprintf(
 			/* translators: 1: Current page, 2: Total pages. */
-			_x( '%1$s of %2$s', 'paging' ),
+			_x( '%1$s מתוך %2$s', 'paging' ),
 			$html_current_page,
 			$html_total_pages
 		) . $total_pages_after;
@@ -160,6 +160,7 @@ class Stories extends WP_List_Table
 
 		echo $this->_pagination;
 	}
+    
     function prepare_items()
     {
         global $wpdb;

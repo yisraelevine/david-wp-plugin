@@ -24,7 +24,7 @@ class Stories extends WP_List_Table
             number_format_i18n( $this->get_pagination_arg( 'end_item' ) ),
             number_format_i18n( $total_items )
         );
-
+        echo $total_pages;
         ?>
         <div class="tablenav-pages">
             <span class="displaying-num"><?php echo $pagination_text; ?></span>

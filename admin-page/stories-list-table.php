@@ -222,7 +222,7 @@ class Stories extends WP_List_Table
         global $wpdb;
         $table_name = $wpdb->prefix . 'stories';
 
-        $per_page = 10;
+        $per_page = 100;
         $current_page = $this->get_pagenum();
         $total_items = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
         $start_item = ($current_page - 1) * $per_page + 1;

@@ -36,6 +36,11 @@ input[type=url] {
     padding: 0 0 0 8px;
 }
 
+.tablenav .actions select {
+    float: inline-start;
+    margin-right: 0;
+}
+
 .tablenav .tablenav-pages {
     float: inline-end;
 }

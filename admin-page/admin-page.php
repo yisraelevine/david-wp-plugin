@@ -15,6 +15,7 @@ function page_content()
 {
     ?>
     <div class="wrap">
+        <h2>ניהול סיפורים</h2>
         <?php
         include_once ('upload-csv.php');
         include_once ('add-new-row.php');

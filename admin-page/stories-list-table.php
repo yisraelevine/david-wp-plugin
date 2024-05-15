@@ -11,7 +11,6 @@ class Stories extends WP_List_Table
 			return;
 		}
 
-
 		$total_items     = $this->_pagination_args['total_items'];
 		$total_pages     = $this->_pagination_args['total_pages'];
 		$infinite_scroll = false;

@@ -30,3 +30,11 @@ input[type=url] {
     background-color: unset;
     pointer-events: none;
 }
+
+.bulkactions {
+    float: inline-start;
+}
+
+.tablenav-pages {
+    float: inline-end;
+}

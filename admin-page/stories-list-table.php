@@ -34,7 +34,7 @@ class Stories extends WP_List_Table
 
 		echo '<label for="bulk-action-selector-' . esc_attr( $which ) . '" class="screen-reader-text">' .
 			/* translators: Hidden accessibility text. */
-			__( 'Select bulk action' ) .
+			__( 'בחר פעולה' ) .
 		'</label>';
 		echo '<select name="action' . $two . '" id="bulk-action-selector-' . esc_attr( $which ) . "\">\n";
 		echo '<option value="-1">' . __( 'פעולות בכמות גדולה' ) . "</option>\n";

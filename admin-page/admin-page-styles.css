@@ -36,11 +36,21 @@ input[type=url] {
     padding: 0 0 0 8px;
 }
 
-.tablenav .actions select {
+.tablenav .actions select { 
     float: inline-start;
     margin-right: 0;
 }
 
 .tablenav .tablenav-pages {
     float: inline-end;
+}
+
+@media screen and (max-width: 782px) {
+    .wp-list-table tr:not(.inline-edit-row):not(.no-items) td:not(.column-primary)::before {
+        position: relative;
+        float: inline-start;
+    }
+    tbody td input[type=checkbox] {
+        float: inline-end;
+    }
 }

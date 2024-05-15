@@ -24,7 +24,6 @@ class Stories extends WP_List_Table
             $this->get_pagination_arg( 'end_item' ),
             $total_items
         );
-        echo strval($this->_pagination_args['start_item']);
         ?>
         <div class="tablenav-pages">
             <span class="displaying-num"><?php echo $pagination_text; ?></span>

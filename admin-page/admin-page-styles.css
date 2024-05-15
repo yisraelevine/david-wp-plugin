@@ -31,10 +31,10 @@ input[type=url] {
     pointer-events: none;
 }
 
-.bulkactions {
+.tablenav .bulkactions {
     float: inline-start;
 }
 
-.tablenav-pages {
+.tablenav .tablenav-pages {
     float: inline-end;
 }

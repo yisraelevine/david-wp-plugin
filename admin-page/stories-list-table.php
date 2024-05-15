@@ -12,7 +12,7 @@ class Stories extends WP_List_Table
         }
 
         $total_items = $this->_pagination_args['total_items'];
-        $total_pages = $this->_pagination_args['total_pages'];
+        $total_pages = $this->_pagination_args['total_pages']; 
         $infinite_scroll = false;
 
         if ( 'top' === $which && $total_pages > 1 ) {

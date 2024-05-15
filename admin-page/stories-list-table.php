@@ -240,6 +240,8 @@ class Stories extends WP_List_Table
             case 'new':
             case 'phone':
                 return '<input type="checkbox"' . ($item[$column_name] ? 'checked' : '') . '>';
+            case 'url':
+                return '<input type="url" value="' . $item[$column_name] . '">'
             default:
                 return $item[$column_name];
         }

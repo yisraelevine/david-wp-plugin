@@ -2,6 +2,30 @@
 
 class Stories extends WP_List_Table
 {
+    protected function pagination( $which ) {
+        $total_items = $this->get_pagination_arg( 'total_items' );
+        $total_pages = $this->get_pagination_arg( 'total_pages' );
+        $infinite_scroll = true;
+
+        if ( 'top' === $which && $total_pages > 1 ) {
+            $this->screen->render_screen_reader_content( 'heading_pagination' );
+        }
+
+        $pagination_text = sprintf( __( 'Showing %s to %s of %s items', 'textdomain' ), 
+            $this->get_pagination_arg( 'start_item' ), 
+            $this->get_pagination_arg( 'end_item' ), 
+            number_format_i18n( $total_items ) );
+
+        ?>
+        <div class="tablenav-pages">
+            <span class="displaying-num"><?php echo $pagination_text; ?></span>
+            <?php
+            $this->pagination_links( $which );
+            ?>
+        </div>
+        <?php
+    }
+    
     function prepare_items()
     {
         global $wpdb;

@@ -48,6 +48,7 @@ input[type=url] {
 @media screen and (max-width: 782px) {
     .wp-list-table tr:not(.inline-edit-row):not(.no-items) td:not(.column-primary)::before {
         position: relative;
+        right: 10px;
         float: inline-start;
     }
     tbody td input[type=checkbox] {

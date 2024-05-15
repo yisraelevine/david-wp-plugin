@@ -20,11 +20,10 @@ class Stories extends WP_List_Table
         }
 
         $pagination_text = sprintf( __( 'Showing %1$s to %2$s of %3$s items', 'textdomain' ),
-            $this->get_pagination_arg( 'start_item' ),
+            $start_item,
             $this->get_pagination_arg( 'end_item' ),
             $total_items
         );
-        echo $total_pages;
         ?>
         <div class="tablenav-pages">
             <span class="displaying-num"><?php echo $pagination_text; ?></span>

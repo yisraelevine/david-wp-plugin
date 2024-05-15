@@ -51,6 +51,7 @@ input[type=url] {
         right: 10px;
         float: inline-start;
     }
+    
     tbody td input {
         float: inline-end;
     }

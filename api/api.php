@@ -10,9 +10,5 @@ function register_custom_endpoint() {
 }
 
 function list_endpoint_callback($data) {
-    $response = array(
-        'message' => 'This is a custom endpoint response',
-        'data_received' => $data,
-    );
-    return rest_ensure_response($response);
+    return 'jkl';
 }

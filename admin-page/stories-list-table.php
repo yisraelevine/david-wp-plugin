@@ -225,8 +225,6 @@ class Stories extends WP_List_Table
         $per_page = 100;
         $current_page = $this->get_pagenum();
         $total_items = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
-        $start_item = ($current_page - 1) * $per_page + 1;
-        $end_item = min($start_item + $per_page - 1, $total_items);
 
         $this->items = $wpdb->get_results("SELECT * FROM $table_name LIMIT " . (($current_page - 1) * $per_page) . ", $per_page", ARRAY_A);
 

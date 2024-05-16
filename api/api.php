@@ -20,15 +20,14 @@ function list_endpoint_callback($data) {
 }
 
 function url_endpoint_callback($data) {
-    $id = $_GET['id'];
-    $sanitized_id = filter_var($id, FILTER_VALIDATE_INT);
+    $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
     if ($sanitized_id === false) {
         return [];
     } else {
         global $wpdb;
         $table_name = $wpdb->prefix . 'stories';
-        $query = $wpdb->prepare("SELECT url FROM $table_name WHERE id = %d", $sanitized_id);
+        $query = $wpdb->prepare("SELECT url FROM $table_name WHERE id = %d", $id);
         $results = $wpdb->get_results($query, ARRAY_A);
         return $results;
     }

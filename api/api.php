@@ -23,7 +23,7 @@ function url_endpoint_callback($data) {
     $id = filter_var($data->get_param('id'), FILTER_SANITIZE_NUMBER_INT);
 
     if ($id === false || $id === '') {
-        return null;
+        return array('url' => null);
     }
 
     global $wpdb;

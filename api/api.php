@@ -25,10 +25,15 @@ function url_endpoint_callback($data) {
     if ($id === false || $id === '') {
         return new WP_Error('invalid_id', 'Invalid ID parameter', array('status' => 400));
     }
-    
+
     global $wpdb;
     $table_name = $wpdb->prefix . 'stories';
     $query = $wpdb->prepare("SELECT url FROM $table_name WHERE id = %d", $id);
-    $results = $wpdb->get_results($query, ARRAY_A);
-    return $results;
+    $url = $wpdb->get_var($query);
+
+    if (!$url) {
+        return new WP_Error('story_not_found', 'Story not found', array('status' => 404));
+    }
+
+    return $url;
 }

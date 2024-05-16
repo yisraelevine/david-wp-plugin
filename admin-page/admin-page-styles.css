@@ -2,24 +2,24 @@
     direction: rtl;
 }
 
-.form-grid {
+input[type=url] {
+    direction: ltr;
+}
+
+.add-story-form {
     display: grid;
     grid-template-columns: max-content auto;
     gap: 10px;
     max-width: 400px;
 }
 
-input[type=url] {
-    direction: ltr;
-}
-
-.form-grid label {
+.add-story-form label {
     grid-column: 1;
     font-size: 14px;
     font-weight: 600;
 }
 
-.form-grid input {
+.add-story-form input {
     grid-column: 2;
     margin: 0;
 }

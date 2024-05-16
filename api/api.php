@@ -23,7 +23,7 @@ function url_endpoint_callback($data) {
     $id = filter_var($data->get_param('id'), FILTER_SANITIZE_NUMBER_INT);
 
     if ($id === false || $id === '') {
-        return array('url' => null);
+        return;
     }
 
     global $wpdb;
@@ -31,5 +31,5 @@ function url_endpoint_callback($data) {
     $query = $wpdb->prepare("SELECT url FROM $table_name WHERE id = %d", $id);
     $url = $wpdb->get_var($query);
 
-    return array('url' => $url);
+    return $url ? trim($url, '"') : null;
 }

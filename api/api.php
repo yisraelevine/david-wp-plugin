@@ -35,5 +35,5 @@ function url_endpoint_callback($data) {
         return new WP_Error('story_not_found', 'Story not found', array('status' => 404));
     }
 
-    return $url;
+    return array('url' => $url);
 }

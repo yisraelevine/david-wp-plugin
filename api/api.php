@@ -31,9 +31,5 @@ function url_endpoint_callback($data) {
     $query = $wpdb->prepare("SELECT url FROM $table_name WHERE id = %d", $id);
     $url = $wpdb->get_var($query);
 
-    if (!$url) {
-        return new WP_Error('story_not_found', 'Story not found', array('status' => 404));
-    }
-
     return array('url' => $url);
 }

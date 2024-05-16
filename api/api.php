@@ -24,7 +24,7 @@ function url_endpoint_callback($data) {
     $sanitized_id = filter_var($id, FILTER_VALIDATE_INT);
 
     if ($sanitized_id === false) {
-        return;
+        return [];
     } else {
         global $wpdb;
         $table_name = $wpdb->prefix . 'stories';

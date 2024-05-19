@@ -5,7 +5,7 @@ function delete_stories_table()
     global $wpdb;
     $table = $wpdb->prefix . 'stories';
 
-    $query = "DROP TABLE IF EXISTS $table_name";
+    $query = "DROP TABLE IF EXISTS $table";
     $wpdb->query($query);
 }
 

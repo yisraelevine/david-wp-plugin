@@ -6,7 +6,7 @@ if (!isset($_POST['submit']) || !wp_verify_nonce($_POST['add_new_row_nonce'], 'a
 global $wpdb;
 $table = $wpdb->prefix . 'stories';
 
-$name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+$name = filter_input(INPUT_POST, 'name', FILTER_DEFAULT);
 $url = filter_input(INPUT_POST, 'url', FILTER_SANITIZE_URL);
 
 if (!$name || !$url) {
@@ -36,17 +36,17 @@ echo $wpdb->insert_id ?
 <form method="post" class="add-story-form">
     <label for="name">שם:</label>
     <input type="text" id="name" name="name" required>
-    
+
     <label for="url">קישור:</label>
     <input type="url" id="url" name="url" required>
-    
+
     <label for="is_new">חדש:</label>
     <input type="checkbox" id="is_new" name="is_new">
-    
+
     <label for="is_phone">טלפון:</label>
     <input type="checkbox" id="is_phone" name="is_phone">
-    
+
     <?php wp_nonce_field('add_new_row_action', 'add_new_row_nonce'); ?>
-    
+
     <input type="submit" name="submit" value="הוספה">
 </form>

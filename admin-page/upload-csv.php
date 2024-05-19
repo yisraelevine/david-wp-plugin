@@ -1,44 +1,48 @@
 <h2>העלאת סיפורים CSV</h2>
 <form method="post" enctype="multipart/form-data">
+    <label for="csv_file">בחר קובץ (CSV)</label>
     <input type="file" name="csv_file" accept=".csv" />
     <input type="submit" name="submit" value="העלה CSV" />
 </form>
 
 <?php
-if (isset($_FILES['csv_file']['tmp_name']) && !empty($_FILES['csv_file']['tmp_name'])) {
-    $csv_file_path = $_FILES['csv_file']['tmp_name'];
-
-    if (($handle = fopen($csv_file_path, "r")) !== FALSE) {
-        global $wpdb;
-        $table = $wpdb->prefix . 'stories';
-
-        $query = "INSERT INTO $table (name, url, is_new, is_phone) VALUES ";
-        $value_placeholders = array();
-
-        while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-            if (count($data) != 4) {
-                continue;
-            }
-
-            $value_placeholders[] = $wpdb->prepare("(%s, %s, %d, %d)", $data[0], $data[1], $data[2] == 1, $data[3] == 1);
-
-            if (count($value_placeholders) >= 1000) {
-                $query .= implode(", ", $value_placeholders);
-                $wpdb->query($query);
-                $query = "INSERT INTO $table (name, url, is_new, is_phone) VALUES ";
-                $value_placeholders = array();
-            }
-        }
-
-        if (!empty($value_placeholders)) {
-            $query .= implode(", ", $value_placeholders);
-            $wpdb->query($query);
-        }
-
-        fclose($handle);
-    } else {
-        echo "שגיאה בפתיחת קובץ CSV.";
-    }
-} else {
+if (!isset($_FILES['csv_file']['tmp_name']) || empty($_FILES['csv_file']['tmp_name'])) {
     echo "נא להעלות קובץ CSV.";
+    return;
 }
+
+$csv_file_path = $_FILES['csv_file']['tmp_name'];
+
+$handle = fopen($csv_file_path, "r");
+
+if ($handle === FALSE) {
+    echo "שגיאה בפתיחת קובץ CSV.";
+    return;
+}
+
+global $wpdb;
+$table = $wpdb->prefix . 'stories';
+
+$query = "INSERT INTO $table (name, url, is_new, is_phone) VALUES ";
+$values = [];
+
+while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+    if (count($data) != 4) {
+        echo "שגיאה: מספר העמודות בקובץ CSV לא תקין.";
+        fclose($handle);
+        return;
+    }
+
+    $values[] = $wpdb->prepare("(%s, %s, %d, %d)", $data[0], $data[1], $data[2] == 1, $data[3] == 1);
+}
+
+if (!empty($values)) {
+    $query .= implode(", ", $values);
+    $result = $wpdb->query($query);
+    if ($result === FALSE) {
+        echo "שגיאה בביצוע השאילתה למסד הנתונים.";
+    }
+}
+
+fclose($handle);
+?>

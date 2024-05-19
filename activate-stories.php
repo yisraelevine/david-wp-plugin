@@ -13,7 +13,7 @@ function create_stories_table()
         is_phone BIT NOT NULL
     )";
 
-    require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     dbDelta($query);
 }
 

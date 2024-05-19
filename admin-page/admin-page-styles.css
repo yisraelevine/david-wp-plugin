@@ -59,8 +59,15 @@ input[type=url] {
 
 .stories-list-table {
     text-align: right;
+    width: 100%;
+    border: 1px solid #c3c4c7;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
 }
 
 .stories-list-table tbody tr:nth-child(odd) {
     background-color: #f6f7f7;
+}
+
+.stories-list-table tbody td:nth-child(2) {
+    text-align: left;
 }

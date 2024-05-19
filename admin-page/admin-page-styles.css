@@ -36,7 +36,7 @@ input[type=url] {
     padding: 0 0 0 8px;
 }
 
-.tablenav .actions select { 
+.tablenav .actions select {
     float: inline-start;
     margin-right: 0;
 }
@@ -55,4 +55,8 @@ input[type=url] {
     tbody td input {
         float: inline-end;
     }
+}
+
+table.stories-list-table tbody tr:nth-child(odd) {
+    background-color: #c9c9c9;
 }

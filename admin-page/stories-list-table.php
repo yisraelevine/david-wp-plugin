@@ -34,8 +34,8 @@ function get_results()
 			$is_phone = $result['is_phone'];
 			?>
 			<tr>
-				<td><?php $name ?></td>
-				<td><?php $url ?></td>
+				<td><?php echo $name ?></td>
+				<td><?php echo $url ?></td>
 				<td>
 					<input type="checkbox" <?php echo ($is_new ? 'selected' : ''); ?> />
 				</td>

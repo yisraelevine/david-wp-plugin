@@ -57,6 +57,6 @@ input[type=url] {
     }
 }
 
-table.stories-list-table tbody tr:nth-child(odd) {
+.stories-list-table tbody tr:nth-child(odd) {
     background-color: #f6f7f7;
 }

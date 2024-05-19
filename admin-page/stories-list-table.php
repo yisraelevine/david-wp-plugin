@@ -15,7 +15,7 @@ function get_results()
 ?>
 
 <h2>רשימת סיפורים</h2>
-<table class="stories-list-table">
+<table class="stories-list-table" dir="rtl">
 	<thead>
 		<tr>
 			<th>שם</th>

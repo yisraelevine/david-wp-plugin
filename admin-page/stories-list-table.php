@@ -262,18 +262,23 @@ class Stories extends WP_List_Table
     function process_bulk_action()
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . 'stories';
+        $table = $wpdb->prefix . 'stories';
 
-        if ('delete' === $this->current_action()) {
-            $ids = isset($_REQUEST['bulk-delete']) ? $_REQUEST['bulk-delete'] : array();
-            if (is_array($ids))
-                $ids = implode(',', $ids);
-
-            if (!empty($ids)) {
-                $wpdb->query("DELETE FROM $table_name WHERE id IN($ids)");
-                echo '<script>window.location.reload();</script>';
-            }
+        if ('delete' !== $this->current_action()) {
+            return;
         }
+
+        $ids = isset($_REQUEST['bulk-delete']) ? $_REQUEST['bulk-delete'] : array();
+        if (is_array($ids)) {
+            $ids = implode(',', $ids);
+        }
+
+        if (empty($ids)) {
+            return;
+        }
+        $query = "DELETE FROM $table WHERE id IN($ids)";
+        $wpdb->query($query);
+        echo '<script>window.location.reload()</script>';
     }
 
     function no_items() {

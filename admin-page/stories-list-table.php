@@ -7,6 +7,7 @@ function get_results()
 	$per_page = 50;
 	$current_page = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_NUMBER_INT) ?: 1;
 	$query = "SELECT * FROM $table_name LIMIT " . (($current_page - 1) * $per_page) . ", $per_page";
+	echo $query;
 	$results = $wpdb->get_results($query, ARRAY_A);
 	return $results;
 }

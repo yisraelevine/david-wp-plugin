@@ -10,9 +10,9 @@ if (isset($_FILES['csv_file']['tmp_name']) && !empty($_FILES['csv_file']['tmp_na
 
     if (($handle = fopen($csv_file_path, "r")) !== FALSE) {
         global $wpdb;
-        $table_name = $wpdb->prefix . 'stories';
+        $table = $wpdb->prefix . 'stories';
 
-        $sql = "INSERT INTO $table_name (name, url, new, phone) VALUES ";
+        $query = "INSERT INTO $table (name, url, is_new, is_phone) VALUES ";
         $value_placeholders = array();
 
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
@@ -23,16 +23,16 @@ if (isset($_FILES['csv_file']['tmp_name']) && !empty($_FILES['csv_file']['tmp_na
             $value_placeholders[] = $wpdb->prepare("(%s, %s, %d, %d)", $data[0], $data[1], $data[2] == 1, $data[3] == 1);
 
             if (count($value_placeholders) >= 1000) {
-                $sql .= implode(", ", $value_placeholders);
-                $wpdb->query($sql);
-                $sql = "INSERT INTO $table_name (name, url, new, phone) VALUES ";
+                $query .= implode(", ", $value_placeholders);
+                $wpdb->query($query);
+                $query = "INSERT INTO $table (name, url, is_new, is_phone) VALUES ";
                 $value_placeholders = array();
             }
         }
 
         if (!empty($value_placeholders)) {
-            $sql .= implode(", ", $value_placeholders);
-            $wpdb->query($sql);
+            $query .= implode(", ", $value_placeholders);
+            $wpdb->query($query);
         }
 
         fclose($handle);

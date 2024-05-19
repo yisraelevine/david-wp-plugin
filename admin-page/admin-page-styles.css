@@ -31,7 +31,7 @@
     background-color: #f6f7f7;
 }
 
-.stories-list-table tbody td input {
+.stories-list-table tbody td:nth-child(2) input {
     width: 100%;
 }
 

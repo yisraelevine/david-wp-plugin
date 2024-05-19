@@ -31,12 +31,10 @@
     background-color: #f6f7f7;
 }
 
-.stories-list-table tbody td:nth-child(2) {
+.stories-list-table tbody td input {
     width: 100%;
 }
 
-.stories-list-table tbody td:nth-child(1),
-.stories-list-table tbody td:nth-child(3),
-.stories-list-table tbody td:nth-child(4) {
+.stories-list-table tbody td:not(:nth-child(2)) {
     width: 0;
 }

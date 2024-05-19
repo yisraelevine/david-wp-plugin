@@ -28,11 +28,10 @@ function get_results()
 		<?php
 		$results = get_results();
 		foreach ($results as $result) {
-			$name = $results['name'];
-			$url = $results['url'];
-			$is_new = $results['is_new'];
-			$is_phone = $results['is_phone'];
-			echo json_encode($result);
+			$name = $result['name'];
+			$url = $result['url'];
+			$is_new = $result['is_new'];
+			$is_phone = $result['is_phone'];
 			echo "<tr>
 				<td>$name</td>
 				<td>$url</td>

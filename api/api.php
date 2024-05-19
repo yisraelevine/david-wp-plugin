@@ -15,7 +15,8 @@ function register_list_endpoint() {
 function list_endpoint_callback($data) {
     global $wpdb;
     $table = $wpdb->prefix . 'stories';
-    $results = $wpdb->get_results("SELECT id, name, is_new, is_phone FROM $table", ARRAY_A);
+    $query = "SELECT id, name, is_new, is_phone FROM $table";
+    $results = $wpdb->get_results($query, ARRAY_A);
     return $results;
 }
 

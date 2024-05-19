@@ -5,7 +5,7 @@ function get_results()
 	$table_name = $wpdb->prefix . 'stories';
 
 	$per_page = 50;
-	$current_page = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_NUMBER_INT);
+	$current_page = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_NUMBER_INT) ?: 1;
 	$query = "SELECT * FROM $table_name LIMIT " . (($current_page - 1) * $per_page) . ", $per_page";
 	$results = $wpdb->get_results($query, ARRAY_A);
 	return $results;
@@ -28,8 +28,8 @@ function get_results()
 		$results = get_results();
 		foreach ($results as $result) {
 			echo "<tr>";
-			foreach ($result as $cell) {
-				echo "<td>$cell</td>";
+			foreach ($result as $key => $value) {
+				echo "<td>$value</td>";
 			}
 			echo "</tr>";
 		}

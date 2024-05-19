@@ -3,19 +3,18 @@
 function create_stories_table()
 {
     global $wpdb;
-    $table_name = $wpdb->prefix . 'stories';
+    $table = $wpdb->prefix . 'stories';
 
-    $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+    $query = "CREATE TABLE IF NOT EXISTS $table (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         url VARCHAR(255) NOT NULL,
-        new BIT NOT NULL,
-        phone BIT NOT NULL
+        is_new BIT NOT NULL,
+        is_phone BIT NOT NULL
     )";
 
     require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
-
-    dbDelta($sql);
+    dbDelta($query);
 }
 
 function activate_stories_plugin()

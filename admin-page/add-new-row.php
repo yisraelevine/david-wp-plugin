@@ -4,7 +4,7 @@ if (!isset($_POST['submit']) || !wp_verify_nonce($_POST['add_new_row_nonce'], 'a
 }
 
 global $wpdb;
-$table_name = $wpdb->prefix . 'stories';
+$table = $wpdb->prefix . 'stories';
 
 $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
 $url = filter_input(INPUT_POST, 'url', FILTER_SANITIZE_URL);
@@ -18,7 +18,7 @@ $is_new = filter_input(INPUT_POST, 'is_new', FILTER_VALIDATE_BOOLEAN);
 $is_phone = filter_input(INPUT_POST, 'is_phone', FILTER_VALIDATE_BOOLEAN);
 
 $wpdb->insert(
-    $table_name,
+    $table,
     array(
         'name' => $name,
         'url' => $url,

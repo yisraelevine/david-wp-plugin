@@ -13,3 +13,4 @@ function deactivate_stories_plugin()
 {
     delete_stories_table();
 }
+

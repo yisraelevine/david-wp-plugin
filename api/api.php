@@ -14,8 +14,8 @@ function register_list_endpoint() {
 
 function list_endpoint_callback($data) {
     global $wpdb;
-    $table_name = $wpdb->prefix . 'stories';
-    $results = $wpdb->get_results("SELECT id, name, new, phone FROM $table_name", ARRAY_A);
+    $table = $wpdb->prefix . 'stories';
+    $results = $wpdb->get_results("SELECT id, name, is_new, is_phone FROM $table", ARRAY_A);
     return $results;
 }
 
@@ -27,9 +27,9 @@ function url_endpoint_callback($data) {
     }
 
     global $wpdb;
-    $table_name = $wpdb->prefix . 'stories';
-    $query = $wpdb->prepare("SELECT url FROM $table_name WHERE id = %d", $id);
-    $url = $wpdb->get_var($query);
+    $table = $wpdb->prefix . 'stories';
+    $query = $wpdb->prepare("SELECT url FROM $table WHERE id = %d", $id);
+    $var = $wpdb->get_var($query);
 
-    return $url ?: null;
+    return $var ?: null;
 }

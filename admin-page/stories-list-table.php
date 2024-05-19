@@ -229,16 +229,16 @@ class Stories extends WP_List_Table
             'cb' => '<input type="checkbox">',
             'name' => '<div style="text-align: right;">שם</div>',
             'url' => '<div style="text-align: right;">קישור</div>',
-            'new' => '<div style="text-align: right;">חדש</div>',
-            'phone' => '<div style="text-align: right;">טלפון</div>'
+            'is_new' => '<div style="text-align: right;">חדש</div>',
+            'is_phone' => '<div style="text-align: right;">טלפון</div>'
         ];
     }
 
     function column_default($item, $column_name)
     {
         switch ($column_name) {
-            case 'new':
-            case 'phone':
+            case 'is_new':
+            case 'is_phone':
                 return '<input type="checkbox"' . ($item[$column_name] ? 'checked' : '') . '>';
             case 'url':
                 return '<input type="url" value="' . $item[$column_name] . '">';

@@ -7,7 +7,6 @@ function get_results()
 	$per_page = 50;
 	$current_page = 1;
 	$query = "SELECT * FROM $table_name LIMIT " . (($current_page - 1) * $per_page) . ", $per_page";
-	echo $query;
 	$results = $wpdb->get_results($query, ARRAY_A);
 	return $results;
 }
@@ -28,23 +27,19 @@ function get_results()
 		<?php
 		$results = get_results();
 		foreach ($results as $result) {
-			$name = $result['name'];
-			$url = $result['url'];
-			$is_new = $result['is_new'];
-			$is_phone = $result['is_phone'];
 			?>
 			<tr>
 				<td>
-					<input type="text" value="<?php echo $name ?>" />
+					<input type="text" value="<?php echo $result['name']; ?>" />
 				</td>
 				<td>
-					<input type="url" value="<?php echo $url ?>" />
+					<input type="url" value="<?php echo $result['url']; ?>" />
 				</td>
 				<td>
-					<input type="checkbox" <?php echo ($is_new ? 'checked' : ''); ?> />
+					<input type="checkbox" <?php echo ($result['is_new'] ? 'checked' : ''); ?> />
 				</td>
 				<td>
-					<input type="checkbox" <?php echo ($is_phone ? 'checked' : ''); ?> />
+					<input type="checkbox" <?php echo ($result['is_phone'] ? 'checked' : ''); ?> />
 				</td>
 			</tr>
 			<?php

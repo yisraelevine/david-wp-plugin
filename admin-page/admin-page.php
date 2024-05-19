@@ -13,6 +13,7 @@ function admin_page()
 
 function page_content()
 {
+    wp_enqueue_style('admin-page-styles', plugins_url('admin-page-styles.css', __FILE__));
     ?>
     <div class="wrap">
         <h2>ניהול סיפורים</h2>
@@ -23,7 +24,6 @@ function page_content()
         ?>
     </div>
     <?php
-    wp_enqueue_style('admin-page-styles', plugins_url('admin-page-styles.css', __FILE__));
 }
 
 add_action('admin_menu', 'admin_page');

@@ -3,11 +3,10 @@
 function delete_stories_table()
 {
     global $wpdb;
-    $table_name = $wpdb->prefix . 'stories';
+    $table = $wpdb->prefix . 'stories';
 
-    $sql = "DROP TABLE IF EXISTS $table_name";
-
-    $wpdb->query($sql);
+    $query = "DROP TABLE IF EXISTS $table_name";
+    $wpdb->query($query);
 }
 
 function deactivate_stories_plugin()

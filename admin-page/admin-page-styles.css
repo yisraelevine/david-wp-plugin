@@ -2,10 +2,6 @@
     direction: rtl;
 }
 
-input[type=url] {
-    direction: ltr;
-}
-
 .add-story-form {
     display: grid;
     grid-template-columns: max-content auto;
@@ -24,39 +20,6 @@ input[type=url] {
     margin: 0;
 }
 
-.view-mode tbody td input {
-    border: none;
-    box-shadow: none;
-    background-color: unset;
-    pointer-events: none;
-}
-
-.tablenav .bulkactions {
-    float: inline-start;
-    padding: 0 0 0 8px;
-}
-
-.tablenav .actions select {
-    float: inline-start;
-    margin-right: 0;
-}
-
-.tablenav .tablenav-pages {
-    float: inline-end;
-}
-
-@media screen and (max-width: 782px) {
-    .wp-list-table tr:not(.inline-edit-row):not(.no-items) td:not(.column-primary)::before {
-        position: relative;
-        right: 10px;
-        float: inline-start;
-    }
-
-    tbody td input {
-        float: inline-end;
-    }
-}
-
 .stories-list-table {
     text-align: right;
     width: 100%;
@@ -69,7 +32,7 @@ input[type=url] {
 }
 
 .stories-list-table tbody td:nth-child(2) {
-    text-align: left;
+    width: 100%;
 }
 
 .stories-list-table tbody td:nth-child(1),

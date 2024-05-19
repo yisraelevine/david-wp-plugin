@@ -15,7 +15,7 @@ function get_results()
 ?>
 
 <h2>רשימת סיפורים</h2>
-<table class="stories-list-table" dir="rtl">
+<table class="stories-list-table">
 	<thead>
 		<tr>
 			<th>שם</th>
@@ -32,12 +32,18 @@ function get_results()
 			$url = $result['url'];
 			$is_new = $result['is_new'];
 			$is_phone = $result['is_phone'];
-			echo "<tr>
-				<td>$name</td>
-				<td>$url</td>
-				<td>$is_new</td>
-				<td>$is_phone</td>
-				</tr>";
+			?>
+			<tr>
+				<td><?php $name ?></td>
+				<td><?php $url ?></td>
+				<td>
+					<input type="checkbox" <?php $is_new ? 'selected' : '' ?> />
+				</td>
+				<td>
+					<input type="checkbox" <?php $is_phone ? 'selected' : '' ?> />
+				</td>
+			</tr>
+			<?php
 		}
 		?>
 	</tbody>

@@ -58,5 +58,5 @@ input[type=url] {
 }
 
 table.stories-list-table tbody tr:nth-child(odd) {
-    background-color: #c9c9c9;
+    background-color: #f6f7f7;
 }

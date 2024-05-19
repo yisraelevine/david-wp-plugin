@@ -14,16 +14,16 @@ if (!$name || !$url) {
     return;
 }
 
-$is_new = filter_input(INPUT_POST, 'new', FILTER_VALIDATE_BOOLEAN);
-$is_phone = filter_input(INPUT_POST, 'phone', FILTER_VALIDATE_BOOLEAN);
+$is_new = filter_input(INPUT_POST, 'is_new', FILTER_VALIDATE_BOOLEAN);
+$is_phone = filter_input(INPUT_POST, 'is_phone', FILTER_VALIDATE_BOOLEAN);
 
 $wpdb->insert(
     $table_name,
     array(
         'name' => $name,
         'url' => $url,
-        'new' => $is_new,
-        'phone' => $is_phone
+        'is_new' => $is_new,
+        'is_phone' => $is_phone
     )
 );
 
@@ -40,11 +40,11 @@ echo $wpdb->insert_id ?
     <label for="url">קישור:</label>
     <input type="url" id="url" name="url" required>
     
-    <label for="new">חדש:</label>
-    <input type="checkbox" id="new" name="new">
+    <label for="is_new">חדש:</label>
+    <input type="checkbox" id="is_new" name="is_new">
     
-    <label for="phone">טלפון:</label>
-    <input type="checkbox" id="phone" name="phone">
+    <label for="is_phone">טלפון:</label>
+    <input type="checkbox" id="is_phone" name="is_phone">
     
     <?php wp_nonce_field('add_new_row_action', 'add_new_row_nonce'); ?>
     

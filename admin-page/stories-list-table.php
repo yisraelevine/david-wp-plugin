@@ -37,10 +37,10 @@ function get_results()
 				<td><?php $name ?></td>
 				<td><?php $url ?></td>
 				<td>
-					<input type="checkbox" <?php $is_new ? 'selected' : '' ?> />
+					<input type="checkbox" <?php echo ($is_new ? 'selected' : ''); ?> />
 				</td>
 				<td>
-					<input type="checkbox" <?php $is_phone ? 'selected' : '' ?> />
+					<input type="checkbox" <?php echo ($is_phone ? 'selected' : ''); ?> />
 				</td>
 			</tr>
 			<?php

@@ -32,6 +32,7 @@ function get_results()
 			$url = $results['url'];
 			$is_new = $results['is_new'];
 			$is_phone = $results['is_phone'];
+			echo json_encode($result);
 			echo "<tr>
 				<td>$name</td>
 				<td>$url</td>

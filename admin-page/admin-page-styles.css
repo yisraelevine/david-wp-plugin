@@ -1,5 +1,6 @@
 .wrap {
     direction: rtl;
+    transition: 1s;
 }
 
 .add-story-form {
@@ -21,6 +22,7 @@
 }
 
 .stories-list-table {
+    margin: 6px 0;
     text-align: right;
     width: 100%;
     border: 1px solid #c3c4c7;
@@ -37,4 +39,46 @@
 
 .stories-list-table tbody td:not(:nth-child(2)) {
     width: 0;
+}
+
+.pagination {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2px;
+}
+
+.pagination a {
+    text-decoration: none;
+}
+
+.pagination input {
+    outline: 0;
+}
+
+.pagination a:focus {
+    box-shadow: none;
+}
+
+.pagination span {
+    margin-inline: 4px;
+}
+
+.pagination a,
+.pagination input {
+    align-content: center;
+    box-sizing: border-box;
+    width: 40px;
+    height: 32px;
+    text-align: center;
+    border: 1px solid;
+    border-radius: 4px;
+    margin: 0;
+}
+
+.pagination a:not([href]) {
+    color: gray;
+    opacity: .4;
+    cursor: default;
 }

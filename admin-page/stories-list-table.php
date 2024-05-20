@@ -8,16 +8,17 @@ class StoriesListTable
 	public function __construct()
 	{
 		global $wpdb;
-		$per_page = 50;
+		$offset = 50;
 		$table = $wpdb->prefix . 'stories';
-		$current_page = filter_input(INPUT_GET, 'paged', FILTER_SANITIZE_NUMBER_INT) ?: 1;
-		$limit = ($current_page - 1) * $per_page;
+		$current = filter_input(INPUT_GET, 'paged', FILTER_SANITIZE_NUMBER_INT) ?: 1;
+		$limit = ($current - 1) * $offset;
 		$count = $this->get_count($table);
-		$results = $this->get_results($table, $limit, $per_page);
+		$pages = ceil($count / $offset);
+		$results = $this->get_results($table, $limit, $offset);
 
 		$this->columns = $this->render_columns();
 		$this->rows = $this->render_rows($results);
-		$this->pagination = $this->render_pagination($limit, $per_page, $count);
+		$this->pagination = $this->render_pagination($current, $pages, $count);
 	}
 	private function get_count($table)
 	{
@@ -26,10 +27,10 @@ class StoriesListTable
 		$var = $wpdb->get_var($query);
 		return $var;
 	}
-	private function get_results($table, $limit, $per_page)
+	private function get_results($table, $limit, $offset)
 	{
 		global $wpdb;
-		$query = $wpdb->prepare('SELECT * FROM %i LIMIT %d, %d', $table, $limit, $per_page);
+		$query = $wpdb->prepare('SELECT * FROM %i LIMIT %d, %d', $table, $limit, $offset);
 		$results = $wpdb->get_results($query, ARRAY_A);
 		return $results;
 	}
@@ -48,8 +49,8 @@ class StoriesListTable
 	{
 		$html = '';
 		foreach ($results as $result) {
-			$name = $result['name'];
-			$url = $result['url'];
+			$name = esc_attr($result['name']);
+			$url = esc_url($result['url']);
 			$is_new = $result['is_new'] ? 'checked' : '';
 			$is_phone = $result['is_phone'] ? 'checked' : '';
 
@@ -72,16 +73,31 @@ class StoriesListTable
 		}
 		return $html;
 	}
-	private function render_pagination($limit, $per_page, $count)
+	private function render_pagination($current, $pages, $count)
 	{
-		$start = $limit + 1;
-		$end = min(($limit + $per_page), $count);
-		return sprintf('%d עד %d מתוך %d', $start, $end, $count);
+		$is_first = $current == 1;
+		$is_last = $current == $pages;
+
+		$first_page = $is_first ? '' : sprintf('href="%s"', add_query_arg('paged', 1));
+		$prev_page = $is_first ? '' : sprintf('href="%s"', add_query_arg('paged', $current - 1));
+		$last_page = $is_last ? '' : sprintf('href="%s"', add_query_arg('paged', $pages));
+		$next_page = $is_last ? '' : sprintf('href="%s"', add_query_arg('paged', $current + 1));
+
+		return <<<END
+		<div class="pagination">
+			<span>$count סיפורים</span>
+			<a $first_page>&lt&lt</a>
+			<a $prev_page>&lt</a>
+			<input value="$current" />
+			<span> מתוך $pages</span>
+			<a $next_page>&gt</a>
+			<a $last_page>&gt&gt</a>
+		</div>
+		END;
 	}
 }
 $Stories = new StoriesListTable();
 ?>
-
 <h2>רשימת סיפורים</h2>
 <?php echo $Stories->pagination; ?>
 <table class="stories-list-table">

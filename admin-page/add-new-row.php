@@ -1,3 +1,22 @@
+<h2>הוספת סיפור</h2>
+
+<form method="post" class="add-story-form">
+    <label for="name">שם:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="url">קישור:</label>
+    <input type="url" id="url" name="url" required>
+
+    <label for="is_new">חדש:</label>
+    <input type="checkbox" id="is_new" name="is_new">
+
+    <label for="is_phone">טלפון:</label>
+    <input type="checkbox" id="is_phone" name="is_phone">
+
+    <?php wp_nonce_field('add_new_row_action', 'add_new_row_nonce'); ?>
+
+    <input type="submit" name="submit" value="הוספה">
+</form>
 <?php
 if (!isset($_POST['submit']) || !wp_verify_nonce($_POST['add_new_row_nonce'], 'add_new_row_action')) {
     return;
@@ -31,22 +50,3 @@ echo $wpdb->insert_id ?
     '<div class="updated"><p>הסיפור נוסף בהצלחה!</p></div>' :
     '<div class="error"><p>אירעה שגיאה בהוספת הסיפור!</p></div>';
 ?>
-<h2>הוספת סיפור</h2>
-
-<form method="post" class="add-story-form">
-    <label for="name">שם:</label>
-    <input type="text" id="name" name="name" required>
-
-    <label for="url">קישור:</label>
-    <input type="url" id="url" name="url" required>
-
-    <label for="is_new">חדש:</label>
-    <input type="checkbox" id="is_new" name="is_new">
-
-    <label for="is_phone">טלפון:</label>
-    <input type="checkbox" id="is_phone" name="is_phone">
-
-    <?php wp_nonce_field('add_new_row_action', 'add_new_row_nonce'); ?>
-
-    <input type="submit" name="submit" value="הוספה">
-</form>

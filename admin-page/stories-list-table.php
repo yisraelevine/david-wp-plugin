@@ -51,7 +51,7 @@ function render_pagination()
 	$query = "SELECT COUNT(*) FROM $table";
 	$var = $wpdb->get_var($query);
 
-	return json_encode($var);
+	return $var + 1;
 }
 
 ?>

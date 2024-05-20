@@ -6,9 +6,9 @@ function get_results()
 {
 	global $wpdb, $per_page, $limit;
 	$table = $wpdb->prefix . 'stories';
-	echo "---$limit---";
 
 	$query = "SELECT * FROM $table LIMIT $limit, $per_page";
+	echo $query;
 	$results = $wpdb->get_results($query, ARRAY_A);
 	return $results;
 }

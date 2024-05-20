@@ -27,7 +27,7 @@ function render_columns()
 <h2>רשימת סיפורים</h2>
 <table class="stories-list-table">
 	<thead>
-
+		<?php echo render_columns(); ?>
 	</thead>
 	<tbody>
 		<?php
@@ -52,4 +52,7 @@ function render_columns()
 		}
 		?>
 	</tbody>
+	<tfoot>
+		<?php echo render_columns(); ?>=
+	</tfoot>
 </table>

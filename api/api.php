@@ -6,10 +6,12 @@ function register_list_endpoint()
     register_rest_route('stories/v1', '/list/', array(
         'methods' => 'GET',
         'callback' => 'list_endpoint_callback',
+        'permission_callback' => '__return_true',
     ));
     register_rest_route('stories/v1', '/url/', array(
         'methods' => 'GET',
         'callback' => 'url_endpoint_callback',
+        'permission_callback' => '__return_true',
     ));
 }
 

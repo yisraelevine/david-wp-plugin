@@ -10,18 +10,24 @@ function get_results()
 	$results = $wpdb->get_results($query, ARRAY_A);
 	return $results;
 }
+function render_columns()
+{
+	?>
+	<tr>
+		<th>שם</th>
+		<th>קישור</th>
+		<th>חדש</th>
+		<th>טלפון</th>
+	</tr>
+	<?php
+}
 
 ?>
 
 <h2>רשימת סיפורים</h2>
 <table class="stories-list-table">
 	<thead>
-		<tr>
-			<th>שם</th>
-			<th>קישור</th>
-			<th>חדש</th>
-			<th>טלפון</th>
-		</tr>
+
 	</thead>
 	<tbody>
 		<?php

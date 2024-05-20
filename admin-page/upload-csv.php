@@ -1,6 +1,5 @@
 <h2>העלאת סיפורים CSV</h2>
 <form method="post" enctype="multipart/form-data">
-    <label for="csv_file">בחר קובץ (CSV)</label>
     <input type="file" name="csv_file" accept=".csv" />
     <input type="submit" name="submit" value="העלה CSV" />
 </form>

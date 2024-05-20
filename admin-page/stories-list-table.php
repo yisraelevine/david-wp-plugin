@@ -2,6 +2,8 @@
 $per_page = 50;
 $current_page = filter_input(INPUT_GET, 'paged', FILTER_SANITIZE_NUMBER_INT) ?: 1;
 $limit = ($current_page - 1) * $per_page;
+echo "---$limit---";
+$limit = 0;
 function get_results()
 {
 	global $wpdb, $per_page, $limit;

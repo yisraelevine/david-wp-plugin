@@ -39,5 +39,5 @@ function url_endpoint_callback($data)
     global $wpdb;
     $var = $wpdb->get_var("CALL getStoryUrl($id)");
 
-    return $var || "";
+    return $var ?? '';
 }

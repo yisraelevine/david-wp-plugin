@@ -7,7 +7,6 @@
     display: grid;
     grid-template-columns: max-content auto;
     gap: 10px;
-    max-width: 400px;
 }
 
 .add-story-form label {
@@ -20,6 +19,16 @@
     grid-column: 2;
     margin: 0;
 }
+
+.add-story-form [name=name],
+.add-story-form [name=submit] {
+    max-width: 300px;
+}
+
+.add-story-form [name=url] {
+    max-width: 800px;
+}
+
 
 .stories-list-table {
     margin: 6px 0;

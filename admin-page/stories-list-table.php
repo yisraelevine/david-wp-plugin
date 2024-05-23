@@ -30,7 +30,7 @@ class StoriesListTable
 	private function get_results($table, $limit, $offset)
 	{
 		global $wpdb;
-		$query = $wpdb->prepare('SELECT * FROM %i LIMIT %d, %d', $table, $limit, $offset);
+		$query = $wpdb->prepare('SELECT * FROM %i ORDER BY position LIMIT %d, %d', $table, $limit, $offset);
 		$results = $wpdb->get_results($query, ARRAY_A);
 		return $results;
 	}
@@ -50,7 +50,7 @@ class StoriesListTable
 		$html = '';
 		foreach ($results as $result) {
 			$name = esc_attr($result['name']);
-			$url = esc_url($result['url']);
+			$url = urldecode($result['url']);
 			$is_new = $result['is_new'] ? 'checked' : '';
 			$is_phone = $result['is_phone'] ? 'checked' : '';
 

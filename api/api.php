@@ -17,8 +17,8 @@ function register_list_endpoint()
         array(
             'methods' => 'GET',
             'callback' => 'url_endpoint_callback',
-            'permission_callback' => function () {  
-                return get_current_user_id() === 1;
+            'permission_callback' => function () {
+                return current_user_can('administrator');
             }
         )
     );

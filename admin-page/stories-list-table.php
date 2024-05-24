@@ -10,7 +10,7 @@ class StoriesListTable
 		global $wpdb;
 		$table = $wpdb->prefix . 'stories';
 		$limit = 50;
-		$current = (int) $_GET['paged'] ?? 1;
+		$current = (int) $_GET['paged'] ?: 1;
 		$offset = ($current - 1) * $limit;
 		$count = $this->get_count($table);
 		$pages = ceil($count / $limit);
@@ -31,7 +31,6 @@ class StoriesListTable
 	{
 		global $wpdb;
 		$query = $wpdb->prepare('CALL getStoriesAdmin(%d, %d)', $offset, $limit);
-		echo $query;
 		$results = $wpdb->get_results($query, ARRAY_A);
 		return $results;
 	}
@@ -112,4 +111,4 @@ $Stories = new StoriesListTable();
 		<?php echo $Stories->columns; ?>
 	</tfoot>
 </table>
-<?php echo $Stories->pagination; ?>
+<?php echo $Stories->pagination;

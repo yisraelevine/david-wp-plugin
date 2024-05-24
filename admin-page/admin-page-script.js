@@ -7,12 +7,14 @@ const navigate = (event) => {
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.wrap').removeAttribute('style');
 
-    const url = document.querySelector('.add-story-form [name=url]');
-    url.addEventListener('input', (event) => {
-        try {
-            event.target.value = decodeURIComponent(event.target.value);
-        } catch (error) { }
-    })
+    const urls = document.querySelectorAll('input[type=url]');
+    for (const url of urls) {
+        url.addEventListener('input', (event) => {
+            try {
+                event.target.value = decodeURIComponent(event.target.value);
+            } catch (error) { }
+        })
+    }
 
     const inputs = document.querySelectorAll('.pagination input');
     for (const input of inputs) {

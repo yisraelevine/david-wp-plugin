@@ -7,8 +7,8 @@ function create_stories_table_and_procedures()
 
     $query = "CREATE TABLE IF NOT EXISTS $table (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        url VARCHAR(255) NOT NULL,
+        name VARCHAR(200) NOT NULL,
+        url VARCHAR(200) NOT NULL,
         is_new BIT NOT NULL,
         is_phone BIT NOT NULL
     );";
@@ -17,7 +17,7 @@ function create_stories_table_and_procedures()
     dbDelta($query);
 
     $queries = [
-        "CREATE PROCEDURE insertStory(IN p_name VARCHAR(255), IN p_url VARCHAR(255), IN p_is_new BIT, IN p_is_phone BIT)
+        "CREATE PROCEDURE insertStory(IN p_name VARCHAR(200), IN p_url VARCHAR(200), IN p_is_new BIT, IN p_is_phone BIT)
         BEGIN
             INSERT INTO $table (name, url, is_new, is_phone)
             VALUES (p_name, p_url, p_is_new, p_is_phone);

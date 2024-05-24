@@ -1,0 +1,24 @@
+<h2>העלאת סיפורים CSV</h2>
+<form id="upload-csv-form" method="post" enctype="multipart/form-data">
+    <input type="file" name="csv_file" accept=".csv" />
+    <input type="submit" name="submit" value="העלה CSV" />
+</form>
+<script>
+    const uploadCsvForm = document.getElementById('upload-csv-form');
+
+    uploadCsvForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(uploadCsvForm);
+
+        await fetch('/wp-json/stories/v1/upload-csv/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-WP-Nonce': sessionStorage.wpRestNonce
+            }
+        });
+
+        uploadCsvForm.reset();
+    });
+</script>

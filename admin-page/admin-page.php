@@ -17,8 +17,8 @@ function page_content()
     <div class="wrap" style="opacity: 0">
         <h2>ניהול סיפורים</h2>
         <?php
-        include_once ('upload-csv.php');
-        include_once ('add-new-row.php');
+        include_once ('upload-csv.html');
+        include_once ('add-new-row.html');
         include_once ('stories-list-table.php');
         ?>
     </div>

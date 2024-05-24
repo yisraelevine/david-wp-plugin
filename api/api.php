@@ -38,6 +38,15 @@ function register_list_endpoint()
             'permission_callback' => 'user_is_admin'
         )
     );
+    register_rest_route(
+        'stories/v1',
+        '/upload-csv/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'upload_csv_endpoint_callback',
+            'permission_callback' => 'user_is_admin'
+        )
+    );
 }
 
 function user_is_admin()
@@ -93,4 +102,39 @@ function list_admin_endpoint_callback(WP_REST_Request $req)
     $results = $wpdb->get_results($query, ARRAY_A);
 
     return $results;
+}
+
+function upload_csv_endpoint_callback()
+{
+    if (!isset($_FILES['csv_file']['tmp_name']) || empty($_FILES['csv_file']['tmp_name'])) {
+        return;
+    }
+    
+    $csv_file_path = $_FILES['csv_file']['tmp_name'];
+    $handle = fopen($csv_file_path, "r");
+    
+    if (!$handle) {
+        return;
+    }
+    
+    $values = [];
+    global $wpdb;
+    while ($data = fgetcsv($handle, 500)) {
+        if (count($data) != 4) {
+            continue;
+        }
+    
+        $values[] = $wpdb->prepare("(%s, %s, %d, %d)", $data[0], urldecode($data[1]), (bool) $data[2], (bool) $data[3]);
+    }
+    
+    fclose($handle);
+    
+    if (empty($values)) {
+        return;
+    }
+    
+    $table = $wpdb->prefix . 'stories';
+    $query = "INSERT INTO $table (name, url, is_new, is_phone) VALUES " . implode(", ", array_reverse($values));
+    $result = $wpdb->query($query);
+    return $result;
 }

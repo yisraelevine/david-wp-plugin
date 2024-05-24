@@ -1,0 +1,63 @@
+<h2>הוספת סיפור</h2>
+
+<form id="add-story-form">
+    <label for="name">שם:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="url">קישור:</label>
+    <input type="url" id="url" name="url" required>
+
+    <label for="is_new">חדש:</label>
+    <input type="checkbox" id="is_new" name="is_new">
+
+    <label for="is_phone">טלפון:</label>
+    <input type="checkbox" id="is_phone" name="is_phone">
+
+    <input type="submit" name="submit" value="הוספה">
+</form>
+<style>
+    #add-story-form {
+        display: grid;
+        grid-template-columns: max-content auto;
+        gap: 10px;
+    }
+
+    #add-story-form label {
+        grid-column: 1;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    #add-story-form input {
+        grid-column: 2;
+        margin: 0;
+    }
+
+    #add-story-form [name=name],
+    #add-story-form [name=submit] {
+        max-width: 300px;
+    }
+
+    #add-story-form [name=url] {
+        max-width: 800px;
+    }
+</style>
+<script>
+    const addStoryForm = document.getElementById('add-story-form');
+
+    addStoryForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(addStoryForm);
+
+        await fetch('/wp-json/stories/v1/insert-story/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-WP-Nonce': sessionStorage.wpRestNonce
+            }
+        });
+
+        addStoryForm.reset();
+    });
+</script>

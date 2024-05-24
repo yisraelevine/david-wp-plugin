@@ -3,33 +3,6 @@
     transition: 1s;
 }
 
-.add-story-form {
-    display: grid;
-    grid-template-columns: max-content auto;
-    gap: 10px;
-}
-
-.add-story-form label {
-    grid-column: 1;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.add-story-form input {
-    grid-column: 2;
-    margin: 0;
-}
-
-.add-story-form [name=name],
-.add-story-form [name=submit] {
-    max-width: 300px;
-}
-
-.add-story-form [name=url] {
-    max-width: 800px;
-}
-
-
 .stories-list-table {
     margin: 6px 0;
     text-align: right;
@@ -42,12 +15,30 @@
     background-color: #f6f7f7;
 }
 
-.stories-list-table tbody td:nth-child(2) input {
-    width: 100%;
+.stories-list-table tbody td:nth-child(1) {
+    width: 200px;
 }
 
-.stories-list-table tbody td:not(:nth-child(2)) {
-    width: 0;
+.stories-list-table tbody td:nth-child(2) {
+    width: 600px;
+}
+
+.stories-list-table tbody td:nth-child(3),
+.stories-list-table tbody td:nth-child(4) {
+    width: 50px;
+}
+
+.stories-list-table input[type=text],
+.stories-list-table input[type=url] {
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    color: #4e4e4e;
+    margin: 0;
+    padding: 4px 6px;
+    line-height: 1;
+    min-height: unset;
+    width: 100%;
 }
 
 .pagination {

@@ -6,7 +6,7 @@ function enqueue_nonce_script()
     }
 
     ?>
-    <script>sessionStorage.setItem('wpRestNonce', '<?php echo wp_create_nonce('wp_rest') ?>')</script>
+    <script>sessionStorage.wpRestNonce = '<?php echo wp_create_nonce('wp_rest') ?>'</script>
     <?php
 }
 add_action('wp_enqueue_scripts', 'enqueue_nonce_script');

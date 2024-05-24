@@ -41,3 +41,16 @@ function url_endpoint_callback($data)
 
     return (string) $var;
 }
+
+function insert_story_endpoint_callback($data)
+{
+    $name = (string) $data->get_param('name');
+    $url = (string) $data->get_param('url');
+    $is_new = (bool) $data->get_param('is_new');
+    $is_phone = (bool) $data->get_param('is_phone');
+
+    $query = $wpdb->prepere("CALL insertStory('%s', '%s', %d, %d)", $name, $url, $is_new, $is_phone);
+    $response = $wpdb->query($query);
+    
+    return $response;
+}

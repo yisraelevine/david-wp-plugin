@@ -8,13 +8,13 @@ class StoriesListTable
 	public function __construct()
 	{
 		global $wpdb;
-		$offset = 50;
 		$table = $wpdb->prefix . 'stories';
-		$current = filter_input(INPUT_GET, 'paged', FILTER_SANITIZE_NUMBER_INT) ?: 1;
-		$limit = ($current - 1) * $offset;
+		$limit = 50;
+		$current = (int) $_GET['paged'] ?? 1;
+		$offset = ($current - 1) * $limit;
 		$count = $this->get_count($table);
-		$pages = ceil($count / $offset);
-		$results = $this->get_results($table, $limit, $offset);
+		$pages = ceil($count / $limit);
+		$results = $this->get_results($offset, $limit);
 
 		$this->columns = $this->render_columns();
 		$this->rows = $this->render_rows($results);
@@ -27,10 +27,11 @@ class StoriesListTable
 		$var = $wpdb->get_var($query);
 		return $var;
 	}
-	private function get_results($table, $limit, $offset)
+	private function get_results($offset, $limit)
 	{
 		global $wpdb;
-		$query = $wpdb->prepare('SELECT * FROM %i ORDER BY position LIMIT %d, %d', $table, $limit, $offset);
+		$query = $wpdb->prepare('CALL getStoriesAdmin(%d, %d)', $offset, $limit);
+		echo $query;
 		$results = $wpdb->get_results($query, ARRAY_A);
 		return $results;
 	}

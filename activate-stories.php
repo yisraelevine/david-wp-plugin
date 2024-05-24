@@ -26,13 +26,20 @@ function create_stories_table_and_procedures()
         "CREATE PROCEDURE getStories()
         BEGIN
             SELECT id, name, is_new, is_phone FROM $table
-            ORDER BY id ASC;
+            ORDER BY id DESC;
         END;",
 
         "CREATE PROCEDURE getStoryUrl(IN p_id INT)
         BEGIN
             SELECT url FROM $table
             WHERE id = p_id;
+        END;",
+
+        "CREATE PROCEDURE getStoriesAdmin(IN p_offset INT, IN p_limit INT)
+        BEGIN
+            SELECT * FROM $table
+            ORDER BY id DESC
+            LIMIT p_offset, p_limit;
         END;"
     ];
 

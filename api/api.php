@@ -29,6 +29,15 @@ function register_list_endpoint()
             'permission_callback' => 'user_is_admin'
         )
     );
+    register_rest_route(
+        'stories/v1',
+        '/list-admin/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'list_admin_endpoint_callback',
+            'permission_callback' => 'user_is_admin'
+        )
+    );
 }
 
 function user_is_admin()
@@ -73,4 +82,15 @@ function insert_story_endpoint_callback(WP_REST_Request $req)
     $query = $wpdb->query($query);
 
     return $query;
+}
+function list_admin_endpoint_callback(WP_REST_Request $req)
+{
+    $limit = $req->get_param('limit');
+    $offset = $req->get_param('offset');
+
+    global $wpdb;
+    $query = $wpdb->prepare('CALL getStoriesAdmin(%d, %d)', $limit, $offset);
+    $results = $wpdb->get_results($query, ARRAY_A);
+
+    return $results;
 }

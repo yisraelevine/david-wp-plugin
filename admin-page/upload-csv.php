@@ -36,6 +36,7 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 }
 
 if (!empty($values)) {
+    array_reverse($values);
     $query .= implode(", ", $values);
     $result = $wpdb->query($query);
     if ($result === FALSE) {

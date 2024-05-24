@@ -6,9 +6,16 @@ function delete_stories_table()
     $table = $wpdb->prefix . 'stories';
 
     $wpdb->query("DROP TABLE IF EXISTS $table");
-    $wpdb->query("DROP PROCEDURE IF EXISTS insertStory");
-    $wpdb->query("DROP PROCEDURE IF EXISTS getStories");
-    $wpdb->query("DROP PROCEDURE IF EXISTS getStoryUrl");
+
+    $procedures = [
+        'insertStory',
+        'getStories',
+        'getStoryUrl',
+        'getStoriesAdmin'
+    ];
+    foreach ($procedures as $procedure) {
+        $wpdb->query("DROP PROCEDURE IF EXISTS $procedure");
+    }
 }
 function deactivate_stories_plugin()
 {

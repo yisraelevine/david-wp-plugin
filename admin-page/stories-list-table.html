@@ -1,0 +1,211 @@
+<div id="stories-list">
+	<h2>רשימת סיפורים</h2>
+	<div class="pagination"></div>
+	<table>
+		<thead>
+			<tr>
+				<th>שם</th>
+				<th>קישור</th>
+				<th>חדש</th>
+				<th>טלפון</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+		<tfoot>
+			<tr>
+				<th>שם</th>
+				<th>קישור</th>
+				<th>חדש</th>
+				<th>טלפון</th>
+			</tr>
+		</tfoot>
+	</table>
+	<div class="pagination"></div>
+</div>
+<style>
+	#stories-list {
+		transition: 1s;
+	}
+
+	#stories-list.loading {
+		opacity: 0;
+		transition: none;
+		pointer-events: none;
+	}
+
+	#stories-list table {
+		margin: 6px 0;
+		text-align: right;
+		width: 100%;
+		border: 1px solid #c3c4c7;
+		box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
+	}
+
+	#stories-list table tbody tr:nth-child(odd) {
+		background-color: #f6f7f7;
+	}
+
+	#stories-list table tbody td:nth-child(1) {
+		width: 200px;
+	}
+
+	#stories-list table tbody td:nth-child(2) {
+		width: 600px;
+	}
+
+	#stories-list table tbody td:nth-child(3),
+	#stories-list table tbody td:nth-child(4) {
+		width: 50px;
+	}
+
+	#stories-list table input[type=text],
+	#stories-list table input[type=url] {
+		border: 0;
+		border-radius: 0;
+		background-color: transparent;
+		color: #4e4e4e;
+		margin: 0;
+		padding: 4px 6px;
+		line-height: 1;
+		min-height: unset;
+		width: 100%;
+	}
+
+	#stories-list .pagination {
+		font-size: 14px;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 2px;
+	}
+
+	#stories-list .pagination a {
+		text-decoration: none;
+		cursor: pointer;
+	}
+
+	#stories-list .pagination a:focus {
+		box-shadow: none;
+	}
+
+	#stories-list .pagination input {
+		outline: 0;
+	}
+
+	#stories-list .pagination span {
+		margin-inline: 4px;
+	}
+
+	#stories-list .pagination a,
+	#stories-list .pagination input {
+		align-content: center;
+		box-sizing: border-box;
+		width: 40px;
+		height: 32px;
+		text-align: center;
+		border: 1px solid;
+		border-radius: 4px;
+		margin: 0;
+	}
+
+	#stories-list .pagination a[disabled] {
+		color: gray;
+		opacity: .4;
+		cursor: default;
+		pointer-events: none;
+	}
+</style>
+<script>
+	const setParam = (paged) => {
+		const url = new URL(window.location.href);
+		url.searchParams.set('paged', paged);
+
+		window.history.pushState('', '', url);
+	}
+
+	const stories_list = document.querySelector('#stories-list');
+	const tbody = stories_list.querySelector('table tbody');
+	const pagination_nodes = stories_list.querySelectorAll('.pagination');
+
+	const load = async (paged) => {
+		stories_list.classList.add('loading');
+
+		const limit = 50;
+		const offset = (paged - 1) * limit;
+
+		const url = `/wp-json/stories/v1/list-admin/?offset=${offset}&limit=${limit}`;
+		const options = { method: 'GET', headers: { 'X-WP-Nonce': sessionStorage.wpRestNonce } }
+		const response = await fetch(url, options);
+		let { count, list } = await response.json();
+
+		list = list.map(e => `<tr>
+			<td>
+				<input type="text" value="${e.name}" name="name" autocomplete="off" />
+			</td>
+			<td>
+				<input type="url" value="${decodeURIComponent(e.url)}" name="url" />
+			</td>
+			<td>
+				<input type="checkbox" ${+e.is_new ? 'checked' : ''} name="is_new" />
+			</td>
+			<td>
+				<input type="checkbox" ${+e.is_phone ? 'checked' : ''} name="is_phone" />
+			</td>
+		</tr>`);
+
+		tbody.innerHTML = list.join('');
+
+		const pages = Math.ceil(count / limit);
+		const is_first = paged === 1;
+		const is_last = paged === pages;
+		const first_page = is_first ? 'disabled' : `data-paged="${1}"`;
+		const prev_page = is_first ? 'disabled' : `data-paged="${paged - 1}"`;
+		const next_page = is_last ? 'disabled' : `data-paged="${paged + 1}"`;
+		const last_page = is_last ? 'disabled' : `data-paged="${pages}"`;
+
+		const pagination = `<span>${count} סיפורים</span>
+		<a ${first_page}>&lt&lt</a>
+		<a ${prev_page}>&lt</a>
+		<form><input value="${paged}" name="paged" /></form>
+		<span> מתוך ${pages}</span>
+		<a ${next_page}>&gt</a>
+		<a ${last_page}>&gt&gt</a>`;
+
+		pagination_nodes.forEach(e => e.innerHTML = pagination);
+
+		const pager = async (paged) => {
+			if (!paged) {
+				return;
+			}
+
+			await load(paged);
+
+			setParam(paged);
+		}
+
+		const pagination_form_nodes = stories_list.querySelectorAll('.pagination form');
+		pagination_form_nodes.forEach(e => {
+			e.addEventListener('submit', async (event) => {
+				event.preventDefault();
+
+				await pager(+event.target.paged.value);
+			});
+		});
+
+		const pagination_a_nodes = stories_list.querySelectorAll('.pagination a');
+		pagination_a_nodes.forEach(e => {
+			e.addEventListener('click', async (event) => {
+				event.preventDefault();
+
+				await pager(+event.target.dataset.paged);
+			});
+		});
+
+		stories_list.classList.remove('loading');
+	};
+
+	const params = new URLSearchParams(window.location.href)
+	const paged = +params.get('paged') || 1;
+
+	load(paged);
+</script>

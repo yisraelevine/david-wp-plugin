@@ -94,14 +94,19 @@ function insert_story_endpoint_callback(WP_REST_Request $req)
 }
 function list_admin_endpoint_callback(WP_REST_Request $req)
 {
-    $limit = $req->get_param('limit');
     $offset = $req->get_param('offset');
+    $limit = $req->get_param('limit');
 
     global $wpdb;
-    $query = $wpdb->prepare('CALL getStoriesAdmin(%d, %d)', $limit, $offset);
+    $query = $wpdb->prepare('CALL getStoriesAdmin(%d, %d)', $offset, $limit);
     $results = $wpdb->get_results($query, ARRAY_A);
 
-    return $results;
+    $var = $wpdb->get_var('SELECT COUNT(*) FROM wp_stories');
+
+    return array(
+        'list' => $results,
+        'count' => $var
+    );
 }
 
 function upload_csv_endpoint_callback()
@@ -109,30 +114,30 @@ function upload_csv_endpoint_callback()
     if (!isset($_FILES['csv_file']['tmp_name']) || empty($_FILES['csv_file']['tmp_name'])) {
         return;
     }
-    
+
     $csv_file_path = $_FILES['csv_file']['tmp_name'];
     $handle = fopen($csv_file_path, "r");
-    
+
     if (!$handle) {
         return;
     }
-    
+
     $values = [];
     global $wpdb;
     while ($data = fgetcsv($handle, 500)) {
         if (count($data) != 4) {
             continue;
         }
-    
+
         $values[] = $wpdb->prepare("(%s, %s, %d, %d)", $data[0], urldecode($data[1]), (bool) $data[2], (bool) $data[3]);
     }
-    
+
     fclose($handle);
-    
+
     if (empty($values)) {
         return;
     }
-    
+
     $table = $wpdb->prefix . 'stories';
     $query = "INSERT INTO $table (name, url, is_new, is_phone) VALUES " . implode(", ", array_reverse($values));
     $result = $wpdb->query($query);

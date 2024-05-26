@@ -1,3 +1,9 @@
+<h2>רשימת סיפורים</h2>
+<table class="stories-list-table">
+	<thead></thead>
+	<tbody></tbody>
+	<tfoot></tfoot>
+</table>
 <?php
 
 class StoriesListTable

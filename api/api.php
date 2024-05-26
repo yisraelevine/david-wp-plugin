@@ -103,6 +103,7 @@ function list_admin_endpoint_callback(WP_REST_Request $req)
 
     $var = $wpdb->get_var('SELECT COUNT(*) FROM wp_stories');
 
+
     return array(
         'list' => $results,
         'count' => $var

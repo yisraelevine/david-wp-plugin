@@ -10,11 +10,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-require_once ('activate-stories.php');
-register_activation_hook(__FILE__, 'activate_stories_plugin');
-
-require_once ('deactivate-stories.php');
-register_deactivation_hook(__FILE__, 'deactivate_stories_plugin');
+require_once ('db.php');
+register_activation_hook(__FILE__, 'create');
+register_deactivation_hook(__FILE__, 'drop');
 
 include_once ('nonce.php');
 

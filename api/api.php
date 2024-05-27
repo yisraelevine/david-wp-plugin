@@ -100,9 +100,13 @@ function list_admin_endpoint_callback(WP_REST_Request $req)
     global $wpdb;
     $query = $wpdb->prepare('CALL getStoriesAdmin(%d, %d)', $offset, $limit);
     $results = $wpdb->get_results($query, ARRAY_A);
+<<<<<<< HEAD
 
     $var = $wpdb->get_var('SELECT COUNT(*) FROM wp_stories');
 
+=======
+    $var = $wpdb->get_var('CALL getStoriesCount()');
+>>>>>>> e234452 (Fix bug)
 
     return array(
         'list' => $results,

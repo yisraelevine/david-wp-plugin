@@ -86,8 +86,8 @@ function create()
 function drop()
 {
     global $wpdb;
-    $table = $wpdb->prefix . 'stories';
 
+    $table = $wpdb->prefix . 'stories';
     $procedures = ['insertStory', 'getStories', 'getStoryUrl', 'getStoriesAdmin', 'getStoriesCount'];
 
     drop_table($table);

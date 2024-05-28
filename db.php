@@ -49,8 +49,8 @@ function drop_procedures($procedures)
 function create()
 {
     global $wpdb;
-    $table = $wpdb->prefix . 'stories';
 
+    $table = $wpdb->prefix . 'stories';
     $procedures = [
         [
             'insertStory',

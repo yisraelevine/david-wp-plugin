@@ -14,82 +14,76 @@ function create_table($table)
     dbDelta($query);
 }
 
-function create_procedures($procedures)
+function drop_table($table, $wpdb)
 {
-    global $wpdb;
-
-    foreach ($procedures as $p) {
-        [$name, $params, $body] = $p;
-        $query = "CREATE PROCEDURE $name($params) BEGIN $body; END";
-
-        $wpdb->query($query);
-    }
-}
-
-function drop_table($table)
-{
-    global $wpdb;
-
     $query = "DROP TABLE IF EXISTS $table";
 
     $wpdb->query($query);
 }
 
-function drop_procedures($procedures)
+function create_procedure($procedure, $wpdb)
 {
-    global $wpdb;
+    [$name, $params, $body] = $procedure;
+    $query = "CREATE PROCEDURE $name($params) BEGIN $body; END";
 
-    foreach ($procedures as $p) {
-        $query = "DROP PROCEDURE IF EXISTS $p";
-
-        $wpdb->query($query);
-    }
+    $wpdb->query($query);
 }
+
+function drop_procedure($procedure, $wpdb)
+{
+    [$name] = $procedure;
+    $query = "DROP PROCEDURE IF EXISTS $name";
+
+    $wpdb->query($query);
+}
+
+global $wpdb, $table, $procedures;
+
+$table = $wpdb->prefix . 'stories';
+$procedures = [
+    [
+        'insertStory',
+        'IN p_name VARCHAR(200), IN p_url VARCHAR(200), IN p_is_new BIT, IN p_is_phone BIT',
+        "INSERT INTO $table (name, url, is_new, is_phone) VALUES (p_name, p_url, p_is_new, p_is_phone)"
+    ],
+    [
+        'getStories',
+        '',
+        "SELECT id, name, is_new, is_phone FROM $table ORDER BY id DESC"
+    ],
+    [
+        'getStoryUrl',
+        'IN p_id INT',
+        "SELECT url FROM $table WHERE id = p_id"
+    ],
+    [
+        'getStoriesAdmin',
+        'IN p_offset INT, IN p_limit INT',
+        "SELECT * FROM $table ORDER BY id DESC LIMIT p_offset, p_limit"
+    ],
+    [
+        'getStoriesCount',
+        '',
+        "SELECT COUNT(*) FROM $table"
+    ]
+];
 
 function create()
 {
-    global $wpdb;
-
-    $table = $wpdb->prefix . 'stories';
-    $procedures = [
-        [
-            'insertStory',
-            'IN p_name VARCHAR(200), IN p_url VARCHAR(200), IN p_is_new BIT, IN p_is_phone BIT',
-            "INSERT INTO $table (name, url, is_new, is_phone) VALUES (p_name, p_url, p_is_new, p_is_phone)"
-        ],
-        [
-            'getStories',
-            '',
-            "SELECT id, name, is_new, is_phone FROM $table ORDER BY id DESC"
-        ],
-        [
-            'getStoryUrl',
-            'IN p_id INT',
-            "SELECT url FROM $table WHERE id = p_id"
-        ],
-        [
-            'getStoriesAdmin',
-            'IN p_offset INT, IN p_limit INT',
-            "SELECT * FROM $table ORDER BY id DESC LIMIT p_offset, p_limit"
-        ],
-        [
-            'getStoriesCount',
-            '',
-            "SELECT COUNT(*) FROM $table"
-        ]
-    ];
+    global $wpdb, $table, $procedures;
 
     create_table($table);
-    create_procedures($procedures);
+    foreach ($procedures as $procedure) {
+        create_procedure($procedure, $wpdb);
+    }
 }
 
 function drop()
 {
-    global $wpdb;
+    global $wpdb, $table, $procedures;
 
-    $table = $wpdb->prefix . 'stories';
-    $procedures = ['insertStory', 'getStories', 'getStoryUrl', 'getStoriesAdmin', 'getStoriesCount'];
-
-    drop_table($table);
-    drop_procedures($procedures);
+    drop_table($table, $wpdb);
+    foreach ($procedures as $procedure) {
+        drop_procedure($procedure, $wpdb);
+    }
 }

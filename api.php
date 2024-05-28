@@ -1,4 +1,5 @@
 <?php
+
 add_action('rest_api_init', 'register_list_endpoint');
 
 function register_list_endpoint()
@@ -92,6 +93,7 @@ function insert_story_endpoint_callback(WP_REST_Request $req)
 
     return $query;
 }
+
 function list_admin_endpoint_callback(WP_REST_Request $req)
 {
     $offset = $req->get_param('offset');

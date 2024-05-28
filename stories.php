@@ -16,6 +16,6 @@ register_deactivation_hook(__FILE__, 'drop');
 
 include_once ('nonce.php');
 
-include_once ('admin-page/admin-page.php');
+include_once ('api.php');
 
-include_once ('api/api.php');
+include_once ('admin-page/admin-page.php');

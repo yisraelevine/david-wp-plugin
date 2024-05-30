@@ -166,7 +166,7 @@
 		const pagination = `<span>${count} סיפורים</span>
 		<a ${first_page}>&lt&lt</a>
 		<a ${prev_page}>&lt</a>
-		<form><input value="${paged}" name="paged" /></form>
+		<input value="${paged}" name="paged" />
 		<span> מתוך ${pages}</span>
 		<a ${next_page}>&gt</a>
 		<a ${last_page}>&gt&gt</a>`;
@@ -183,12 +183,18 @@
 			setParam(paged);
 		}
 
-		const pagination_form_nodes = stories_list.querySelectorAll('.pagination form');
+		const pagination_form_nodes = stories_list.querySelectorAll('.pagination input');
 		pagination_form_nodes.forEach(e => {
-			e.addEventListener('submit', async (event) => {
-				event.preventDefault();
-
-				await pager(+event.target.paged.value);
+			e.addEventListener('blur', async (event) => {
+				await pager(+event.target.value);
+			});
+		});
+		pagination_form_nodes.forEach(e => {
+			e.addEventListener('keydown', async (event) => {
+				if (event.key !== 'Enter') {
+					return;
+				}
+				event.target.blur();
 			});
 		});
 

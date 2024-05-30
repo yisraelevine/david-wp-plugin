@@ -32,6 +32,15 @@ function register_list_endpoint()
     );
     register_rest_route(
         'stories/v1',
+        '/update-story/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'update_story_endpoint_callback',
+            'permission_callback' => 'user_is_admin'
+        )
+    );
+    register_rest_route(
+        'stories/v1',
         '/list-admin/',
         array(
             'methods' => 'GET',
@@ -84,6 +93,28 @@ function insert_story_endpoint_callback(WP_REST_Request $req)
     global $wpdb;
     $query = $wpdb->prepare(
         'CALL insertStory("%s", "%s", %d, %d)',
+        $name,
+        $url,
+        (bool) $is_new,
+        (bool) $is_phone
+    );
+    $query = $wpdb->query($query);
+
+    return $query;
+}
+
+function update_story_endpoint_callback(WP_REST_Request $req)
+{
+    $id = $req->get_param('id');
+    $name = $req->get_param('name');
+    $url = $req->get_param('url');
+    $is_new = $req->get_param('is_new');
+    $is_phone = $req->get_param('is_phone');
+
+    global $wpdb;
+    $query = $wpdb->prepare(
+        'CALL updateStory(%d, "%s", "%s", %d, %d)',
+        $id,
         $name,
         $url,
         (bool) $is_new,

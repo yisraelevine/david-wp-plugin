@@ -140,20 +140,54 @@
 
 		list = list.map(e => `<tr>
 			<td>
-				<input type="text" value="${e.name}" name="name" autocomplete="off" />
+				<input data-id="${e.id}" type="text" value="${e.name}" name="name" autocomplete="off" />
 			</td>
 			<td>
-				<input type="url" value="${decodeURIComponent(e.url)}" name="url" />
+				<input data-id="${e.id}" type="url" value="${decodeURIComponent(e.url)}" name="url" />
 			</td>
 			<td>
-				<input type="checkbox" ${+e.is_new ? 'checked' : ''} name="is_new" />
+				<input data-id="${e.id}" type="checkbox" ${+e.is_new ? 'checked' : ''} name="is_new" />
 			</td>
 			<td>
-				<input type="checkbox" ${+e.is_phone ? 'checked' : ''} name="is_phone" />
+				<input data-id="${e.id}" type="checkbox" ${+e.is_phone ? 'checked' : ''} name="is_phone" />
 			</td>
 		</tr>`);
 
 		tbody.innerHTML = list.join('');
+
+		const tbody_input_nodes = tbody.querySelectorAll('input[type=text], input[type=url]');
+		const tbody_input_checkbox_nodes = tbody.querySelectorAll('input[type=checkbox]');
+
+		const tbody_input_event = async (event) => {
+			const id = event.target.dataset.id;
+
+			const nodes = tbody.querySelectorAll(`[data-id="${id}"]`);
+
+			const data = { id: +id };
+
+			nodes.forEach(e => {
+				const value = e.type === 'checkbox' ? e.checked : e.value;
+				data[e.name] = value;
+			});
+
+			await fetch('/wp-json/stories/v1/update-story/', {
+				method: 'POST',
+				body: JSON.stringify(data),
+				headers: {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': sessionStorage.wpRestNonce
+				}
+			});
+		};
+
+		tbody_input_nodes.forEach(e => {
+			e.addEventListener('blur', tbody_input_event);
+			e.addEventListener('keydown', (event) => {
+				if (event.key !== 'Enter') return;
+				tbody_input_event(event);
+			});
+		});
+		tbody_input_checkbox_nodes.forEach(e => e.addEventListener('change', tbody_input_event));
 
 		const pages = Math.ceil(count / limit);
 		const is_first = paged === 1;
@@ -171,7 +205,12 @@
 		<a ${next_page}>&gt</a>
 		<a ${last_page}>&gt&gt</a>`;
 
-		pagination_nodes.forEach(e => e.innerHTML = pagination);
+		pagination_nodes.forEach(e => {
+			e.innerHTML = pagination;
+		});
+
+		const pagination_input_nodes = stories_list.querySelectorAll('.pagination input');
+		const pagination_a_nodes = stories_list.querySelectorAll('.pagination a');
 
 		const pager = async (paged) => {
 			if (!paged) {
@@ -183,35 +222,29 @@
 			setParam(paged);
 		}
 
-		const pagination_form_nodes = stories_list.querySelectorAll('.pagination input');
-		pagination_form_nodes.forEach(e => {
-			e.addEventListener('blur', async (event) => {
-				await pager(+event.target.value);
-			});
-		});
-		pagination_form_nodes.forEach(e => {
-			e.addEventListener('keydown', async (event) => {
-				if (event.key !== 'Enter') {
-					return;
-				}
-				event.target.blur();
-			});
-		});
+		const pagination_input_event = async (event) => {
+			if (event.type === 'blur' || event.key === 'Enter') {
+				const paged = event.target.value;
+				await pager(+paged);
+			}
+		};
+		const pagination_a_event = async (event) => {
+			await pager(+event.target.dataset.paged);
+		};
 
-		const pagination_a_nodes = stories_list.querySelectorAll('.pagination a');
+		pagination_input_nodes.forEach(e => {
+			e.addEventListener('blur', pagination_input_event);
+			e.addEventListener('keydown', pagination_input_event);
+		});
 		pagination_a_nodes.forEach(e => {
-			e.addEventListener('click', async (event) => {
-				event.preventDefault();
-
-				await pager(+event.target.dataset.paged);
-			});
+			e.addEventListener('click', pagination_a_event);
 		});
 
 		stories_list.classList.remove('loading');
 	};
 
 	const params = new URLSearchParams(window.location.href)
-	const paged = +params.get('paged') || 1;
+	const paged = params.get('paged');
 
-	load(paged);
+	load(+paged || 1);
 </script>

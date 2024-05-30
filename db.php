@@ -47,6 +47,11 @@ $procedures = [
         "INSERT INTO $table (name, url, is_new, is_phone) VALUES (p_name, p_url, p_is_new, p_is_phone)"
     ],
     [
+        'updateStory',
+        'IN p_id INT, IN p_name VARCHAR(200), IN p_url VARCHAR(200), IN p_is_new BIT, IN p_is_phone BIT',
+        "UPDATE $table SET name = p_name, url = p_url, is_new = p_is_new, is_phone = p_is_phone WHERE id = p_id"
+    ],
+    [
         'getStories',
         '',
         "SELECT id, name, is_new, is_phone FROM $table ORDER BY id DESC"

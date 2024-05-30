@@ -155,16 +155,10 @@
 
 		tbody.innerHTML = list.join('');
 
-		const tbody_input_nodes = tbody.querySelectorAll('input[type=text], input[type=url]');
-		const tbody_input_checkbox_nodes = tbody.querySelectorAll('input[type=checkbox]');
-
 		const tbody_input_event = async (event) => {
 			const id = event.target.dataset.id;
-
 			const nodes = tbody.querySelectorAll(`[data-id="${id}"]`);
-
 			const data = { id: +id };
-
 			nodes.forEach(e => {
 				const value = e.type === 'checkbox' ? e.checked : e.value;
 				data[e.name] = value;
@@ -180,14 +174,8 @@
 			});
 		};
 
-		tbody_input_nodes.forEach(e => {
-			e.addEventListener('blur', tbody_input_event);
-			e.addEventListener('keydown', (event) => {
-				if (event.key !== 'Enter') return;
-				tbody_input_event(event);
-			});
-		});
-		tbody_input_checkbox_nodes.forEach(e => e.addEventListener('change', tbody_input_event));
+		const tbody_input_nodes = tbody.querySelectorAll('input');
+		tbody_input_nodes.forEach(e => e.addEventListener('input', tbody_input_event));
 
 		const pages = Math.ceil(count / limit);
 		const is_first = paged === 1;
@@ -209,16 +197,9 @@
 			e.innerHTML = pagination;
 		});
 
-		const pagination_input_nodes = stories_list.querySelectorAll('.pagination input');
-		const pagination_a_nodes = stories_list.querySelectorAll('.pagination a');
-
 		const pager = async (paged) => {
-			if (!paged) {
-				return;
-			}
-
+			if (!paged) return;
 			await load(paged);
-
 			setParam(paged);
 		}
 
@@ -231,6 +212,9 @@
 		const pagination_a_event = async (event) => {
 			await pager(+event.target.dataset.paged);
 		};
+
+		const pagination_input_nodes = stories_list.querySelectorAll('.pagination input');
+		const pagination_a_nodes = stories_list.querySelectorAll('.pagination a');
 
 		pagination_input_nodes.forEach(e => {
 			e.addEventListener('blur', pagination_input_event);

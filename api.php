@@ -18,7 +18,7 @@ function register_list_endpoint()
         array(
             'methods' => 'GET',
             'callback' => 'url_endpoint_callback',
-            'permission_callback' => 'user_is_admin'
+            'permission_callback' => 'user_is_logged_in'
         )
     );
     register_rest_route(
@@ -57,6 +57,14 @@ function register_list_endpoint()
             'permission_callback' => 'user_is_admin'
         )
     );
+}
+
+function user_is_logged_in() {
+    if (is_user_logged_in()) {
+        return true;
+    } else {
+        return new WP_Error('rest_not_logged_in', 'You must be logged in to access this endpoint', array('status' => 401));
+    }
 }
 
 function user_is_admin()

@@ -23,33 +23,6 @@ function register_list_endpoint()
     );
     register_rest_route(
         'stories/v1',
-        '/insert-story/',
-        array(
-            'methods' => 'POST',
-            'callback' => 'insert_story_endpoint_callback',
-            'permission_callback' => 'user_is_admin'
-        )
-    );
-    register_rest_route(
-        'stories/v1',
-        '/update-story/',
-        array(
-            'methods' => 'POST',
-            'callback' => 'update_story_endpoint_callback',
-            'permission_callback' => 'user_is_admin'
-        )
-    );
-    register_rest_route(
-        'stories/v1',
-        '/list-admin/',
-        array(
-            'methods' => 'GET',
-            'callback' => 'list_admin_endpoint_callback',
-            'permission_callback' => 'user_is_admin'
-        )
-    );
-    register_rest_route(
-        'stories/v1',
         '/upload-csv/',
         array(
             'methods' => 'POST',
@@ -59,7 +32,8 @@ function register_list_endpoint()
     );
 }
 
-function user_is_logged_in() {
+function user_is_logged_in()
+{
     if (is_user_logged_in()) {
         return true;
     } else {
@@ -91,64 +65,6 @@ function url_endpoint_callback(WP_REST_Request $req)
     return (string) $var;
 }
 
-function insert_story_endpoint_callback(WP_REST_Request $req)
-{
-    $name = $req->get_param('name');
-    $url = $req->get_param('url');
-    $is_new = $req->get_param('is_new');
-    $is_phone = $req->get_param('is_phone');
-
-    global $wpdb;
-    $query = $wpdb->prepare(
-        'CALL insertStory("%s", "%s", %d, %d)',
-        $name,
-        $url,
-        (bool) $is_new,
-        (bool) $is_phone
-    );
-    $query = $wpdb->query($query);
-
-    return $query;
-}
-
-function update_story_endpoint_callback(WP_REST_Request $req)
-{
-    $id = $req->get_param('id');
-    $name = $req->get_param('name');
-    $url = $req->get_param('url');
-    $is_new = $req->get_param('is_new');
-    $is_phone = $req->get_param('is_phone');
-
-    global $wpdb;
-    $query = $wpdb->prepare(
-        'CALL updateStory(%d, "%s", "%s", %d, %d)',
-        $id,
-        $name,
-        $url,
-        (bool) $is_new,
-        (bool) $is_phone
-    );
-    $query = $wpdb->query($query);
-
-    return $query;
-}
-
-function list_admin_endpoint_callback(WP_REST_Request $req)
-{
-    $offset = $req->get_param('offset');
-    $limit = $req->get_param('limit');
-
-    global $wpdb;
-    $query = $wpdb->prepare('CALL getStoriesAdmin(%d, %d)', $offset, $limit);
-    $results = $wpdb->get_results($query, ARRAY_A);
-    $var = $wpdb->get_var('CALL getStoriesCount()');
-
-    return array(
-        'list' => $results,
-        'count' => $var
-    );
-}
-
 function upload_csv_endpoint_callback()
 {
     if (!isset($_FILES['csv_file']['tmp_name']) || empty($_FILES['csv_file']['tmp_name'])) {
@@ -165,11 +81,11 @@ function upload_csv_endpoint_callback()
     $values = [];
     global $wpdb;
     while ($data = fgetcsv($handle, 500)) {
-        if (count($data) != 4) {
+        if (count($data) != 5) {
             continue;
         }
 
-        $values[] = $wpdb->prepare("(%s, %s, %d, %d)", $data[0], urldecode($data[1]), (bool) $data[2], (bool) $data[3]);
+        $values[] = $wpdb->prepare("(%d, %s, %s, %d, %d)", $data[0], $data[1], urldecode($data[2]), (bool) $data[3], (bool) $data[4]);
     }
 
     fclose($handle);
@@ -179,7 +95,8 @@ function upload_csv_endpoint_callback()
     }
 
     $table = $wpdb->prefix . 'stories';
-    $query = "INSERT INTO $table (name, url, is_new, is_phone) VALUES " . implode(", ", array_reverse($values));
+    $result = $wpdb->query("DELETE FROM $table");
+    $query = "INSERT INTO $table (id, name, url, is_new, is_phone) VALUES " . implode(", ", array_reverse($values));
     $result = $wpdb->query($query);
     return $result;
 }

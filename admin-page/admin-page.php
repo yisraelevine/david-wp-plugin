@@ -18,8 +18,6 @@ function page_content()
         <h2>ניהול סיפורים</h2>
         <?php
         include_once ('upload-csv.html');
-        include_once ('add-new-row.html');
-        include_once ('stories-list-table.html');
         ?>
     </div>
     <?php

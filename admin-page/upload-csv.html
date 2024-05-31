@@ -1,4 +1,4 @@
-<h2>העלאת סיפורים CSV</h2>
+<h2>עדכון סיפורים CSV</h2>
 <form id="upload-csv-form" method="post" enctype="multipart/form-data">
     <input type="file" name="csv_file" accept=".csv" />
     <input type="submit" name="submit" value="העלה CSV" />
@@ -9,7 +9,7 @@
     uploadCsvForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        const formData = new FormData(uploadCsvForm);
+        const formData = new FormData(event.target);
 
         await fetch('/wp-json/stories/v1/upload-csv/', {
             method: 'POST',
@@ -20,7 +20,5 @@
         });
 
         uploadCsvForm.reset();
-        
-        await load(1);
     });
 </script>

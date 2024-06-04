@@ -10,9 +10,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+$table = $wpdb->prefix . 'stories';
+
 require_once ('db.php');
-register_activation_hook(__FILE__, 'create');
-register_deactivation_hook(__FILE__, 'drop');
+register_activation_hook(__FILE__, 'create_table');
+register_deactivation_hook(__FILE__, 'drop_table');
 
 include_once ('nonce.php');
 

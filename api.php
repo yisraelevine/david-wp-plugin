@@ -1,6 +1,7 @@
 <?php
 
 add_action('rest_api_init', 'register_list_endpoint');
+$table = $wpdb->prefix . 'stories';
 
 function register_list_endpoint()
 {
@@ -48,18 +49,20 @@ function user_is_admin()
 
 function list_endpoint_callback()
 {
-    global $wpdb;
-    $results = $wpdb->get_results("CALL getStories()", ARRAY_A);
+    global $wpdb, $table;
+
+    $results = $wpdb->get_results("SELECT id, name, is_new, is_phone FROM $table ORDER BY id DESC", ARRAY_A);
 
     return $results;
 }
 
 function url_endpoint_callback(WP_REST_Request $req)
 {
+    global $wpdb, $table;
     $id = $req->get_param('id');
 
-    global $wpdb;
-    $query = $wpdb->prepare('CALL getStoryUrl(%d)', $id);
+    $query = $wpdb->prepare("SELECT url FROM $table WHERE id = %d", $id);
+
     $var = $wpdb->get_var($query);
 
     return (string) $var;
@@ -67,25 +70,24 @@ function url_endpoint_callback(WP_REST_Request $req)
 
 function upload_csv_endpoint_callback()
 {
-    if (!isset($_FILES['csv_file']['tmp_name']) || empty($_FILES['csv_file']['tmp_name'])) {
-        return;
-    }
+    global $wpdb, $table;
 
-    $csv_file_path = $_FILES['csv_file']['tmp_name'];
-    $handle = fopen($csv_file_path, "r");
-
-    if (!$handle) {
-        return;
-    }
+    $path = $_FILES['csv_file']['tmp_name'];
+    $handle = fopen($path, "r");
 
     $values = [];
-    global $wpdb;
     while ($data = fgetcsv($handle, 500)) {
         if (count($data) != 5) {
             continue;
         }
 
-        $values[] = $wpdb->prepare("(%d, %s, %s, %d, %d)", $data[0], $data[1], urldecode($data[2]), (bool) $data[3], (bool) $data[4]);
+        $id = $data[0];
+        $name = $data[1];
+        $url = urldecode($data[2]);
+        $is_new = (bool) $data[3];
+        $is_phone = (bool) $data[4];
+        $value = $wpdb->prepare("(%d, %s, %s, %d, %d)", $id, $name, $url, $is_new, $is_phone);
+        $values[] = $value;
     }
 
     fclose($handle);
@@ -94,9 +96,9 @@ function upload_csv_endpoint_callback()
         return;
     }
 
-    $table = $wpdb->prefix . 'stories';
-    $result = $wpdb->query("DELETE FROM $table");
-    $query = "INSERT INTO $table (id, name, url, is_new, is_phone) VALUES " . implode(", ", array_reverse($values));
-    $result = $wpdb->query($query);
-    return $result;
+    $wpdb->query("DELETE FROM $table");
+
+    $values = implode(", ", array_reverse($values));
+    $query = "INSERT INTO $table (id, name, url, is_new, is_phone) VALUES $values";
+    $wpdb->query($query);
 }

@@ -1,7 +1,6 @@
 <?php
 
 add_action('rest_api_init', 'register_list_endpoint');
-$table = $wpdb->prefix . 'stories';
 
 function register_list_endpoint()
 {
@@ -49,8 +48,9 @@ function user_is_admin()
 
 function list_endpoint_callback()
 {
-    global $wpdb, $table;
+    global $wpdb;
 
+    $table = $wpdb->prefix . 'stories';
     $results = $wpdb->get_results("SELECT id, name, is_new, is_phone FROM $table ORDER BY id DESC", ARRAY_A);
 
     return $results;
@@ -58,9 +58,10 @@ function list_endpoint_callback()
 
 function url_endpoint_callback(WP_REST_Request $req)
 {
-    global $wpdb, $table;
+    global $wpdb;
     $id = $req->get_param('id');
 
+    $table = $wpdb->prefix . 'stories';
     $query = $wpdb->prepare("SELECT url FROM $table WHERE id = %d", $id);
 
     $var = $wpdb->get_var($query);
@@ -70,7 +71,8 @@ function url_endpoint_callback(WP_REST_Request $req)
 
 function upload_csv_endpoint_callback()
 {
-    global $wpdb, $table;
+    global $wpdb;
+    $table = $wpdb->prefix . 'stories';
 
     $path = $_FILES['csv_file']['tmp_name'];
     $handle = fopen($path, "r");
@@ -89,9 +91,9 @@ function upload_csv_endpoint_callback()
         $value = $wpdb->prepare("(%d, %s, %s, %d, %d)", $id, $name, $url, $is_new, $is_phone);
         $values[] = $value;
     }
-
+    
     fclose($handle);
-
+    
     if (empty($values)) {
         return;
     }

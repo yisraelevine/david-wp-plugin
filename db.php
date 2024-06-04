@@ -2,8 +2,9 @@
 
 function create_table()
 {
-    global $table;
+    global $wpdb;
 
+    $table = $wpdb->prefix . 'stories';
     $query = "CREATE TABLE IF NOT EXISTS $table (
         id INT PRIMARY KEY,
         name VARCHAR(200) NOT NULL,
@@ -18,8 +19,9 @@ function create_table()
 
 function drop_table()
 {
-    global $wpdb, $table;
+    global $wpdb;
 
+    $table = $wpdb->prefix . 'stories';
     $query = "DROP TABLE IF EXISTS $table";
 
     $wpdb->query($query);

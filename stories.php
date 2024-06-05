@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 require_once ('db.php');
 register_activation_hook(__FILE__, 'create_table');
-register_deactivation_hook(__FILE__, 'drop_table');
+register_deactivation_hook(__FILE__, 'clean');
 
 include_once ('nonce.php');
 

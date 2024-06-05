@@ -17,6 +17,7 @@ function page_content()
     <div class="wrap" dir="rtl">
         <h2>ניהול סיפורים</h2>
         <?php
+        include_once ('last-update.html');
         include_once ('csv-upload.html');
         ?>
     </div>

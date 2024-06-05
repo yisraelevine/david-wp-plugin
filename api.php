@@ -30,6 +30,24 @@ function register_list_endpoint()
             'permission_callback' => 'user_is_admin'
         )
     );
+    register_rest_route(
+        'stories/v1',
+        '/update-last-update/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'update_stories_last_update',
+            'permission_callback' => 'user_is_admin'
+        )
+    );
+    register_rest_route(
+        'stories/v1',
+        '/get-last-update/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'get_stories_last_update',
+            'permission_callback' => 'user_is_admin'
+        )
+    );
 }
 
 function user_is_logged_in()
@@ -53,7 +71,13 @@ function list_endpoint_callback()
     $table = $wpdb->prefix . 'stories';
     $results = $wpdb->get_results("SELECT id, name, is_new, is_phone FROM $table ORDER BY id DESC", ARRAY_A);
 
-    return $results;
+    $option = get_option('stories-last-update', '');
+    $clean = stripslashes($option);
+
+    return array(
+        'last_update' => $clean,
+        'list' => $results
+    );
 }
 
 function url_endpoint_callback(WP_REST_Request $req)
@@ -91,9 +115,9 @@ function upload_csv_endpoint_callback()
         $value = $wpdb->prepare("(%d, %s, %s, %d, %d)", $id, $name, $url, $is_new, $is_phone);
         $values[] = $value;
     }
-    
+
     fclose($handle);
-    
+
     if (empty($values)) {
         return;
     }
@@ -103,4 +127,19 @@ function upload_csv_endpoint_callback()
     $values = implode(", ", array_reverse($values));
     $query = "INSERT INTO $table (id, name, url, is_new, is_phone) VALUES $values";
     $wpdb->query($query);
+}
+
+function update_stories_last_update()
+{
+    $last_update = $_POST['last-update'];
+
+    update_option('stories-last-update', $last_update);
+}
+
+function get_stories_last_update()
+{
+    $option = get_option('stories-last-update', '');
+    $clean = stripslashes($option);
+
+    return $clean;
 }

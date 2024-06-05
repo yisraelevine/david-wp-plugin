@@ -26,3 +26,9 @@ function drop_table()
 
     $wpdb->query($query);
 }
+
+function clean()
+{
+    drop_table();
+    delete_option('stories-last-update');
+}

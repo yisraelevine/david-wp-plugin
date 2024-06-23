@@ -1,0 +1,66 @@
+<script>
+class Draggable {
+    constructor(container, callback = () => {}) {
+        this.container = container
+        this.callback = callback
+
+        this.container.addEventListener('dragstart', (event) => {
+            if (event.target.parentElement !== this.container) return
+            event.preventDefault()
+            event.target.classList.add('dragging')
+            const rect = event.target.getBoundingClientRect()
+            this.clientX = event.clientX
+            this.clientY = event.clientY
+            this.offsetX = event.clientX - rect.x
+            this.offsetY = event.clientY - rect.y
+            this.activeElement = event.target
+        })
+
+        window.addEventListener('mousemove', this.mousemove)
+        window.addEventListener('touchmove', this.touchmove, { passive: false })
+        window.addEventListener('mouseup', this.end)
+        window.addEventListener('touchend', this.end)
+    }
+
+    mousemove = (event) => {
+        if (!this.activeElement) return
+        this.drag(event.target, event.clientX, event.clientY)
+    }
+
+    touchmove = (event) => {
+        if (!this.activeElement) return
+        event.preventDefault()
+        const touches = event.targetTouches[0]
+        const target = document.elementFromPoint(touches.clientX, touches.clientY)
+        this.drag(target, touches.clientX, touches.clientY)
+    }
+
+    drag = (target, clientX, clientY) => {
+        if (target.parentElement === this.container && !target.isSameNode(this.activeElement)) {
+            const rect = target.getBoundingClientRect()
+            this.clientX = rect.x + this.offsetX
+            this.clientY = rect.y + this.offsetY
+            this.move(target)
+        }
+        this.activeElement.style.transform = `translate(${clientX - this.clientX}px, ${clientY - this.clientY}px)`
+    }
+
+    move(target) {
+        if (target.compareDocumentPosition(this.activeElement) & Node.DOCUMENT_POSITION_PRECEDING) {
+            target = target.nextElementSibling
+        }
+
+        const scrollY = window.scrollY
+        this.container.insertBefore(this.activeElement, target)
+        if (scrollY !== window.scrollY) window.scrollBy(0, scrollY - window.scrollY)
+    }
+
+    end = () => {
+        if (!this.activeElement) return
+        this.activeElement.classList.remove('dragging')
+        this.activeElement.style.transform = ''
+        this.activeElement = undefined
+        this.callback()
+    }
+}
+</script>

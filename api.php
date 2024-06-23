@@ -35,7 +35,7 @@ function register_list_endpoint()
         '/update-last-update/',
         array(
             'methods' => 'POST',
-            'callback' => 'update_stories_last_update',
+            'callback' => 'update_date_endpoint_callback',
             'permission_callback' => 'user_is_admin'
         )
     );
@@ -44,7 +44,16 @@ function register_list_endpoint()
         '/get-last-update/',
         array(
             'methods' => 'GET',
-            'callback' => 'get_stories_last_update',
+            'callback' => 'get_date_endpoint_callback',
+            'permission_callback' => 'user_is_admin'
+        )
+    );
+    register_rest_route(
+        'stories/v1',
+        '/admin-list/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'admin_list_endpoint_callback',
             'permission_callback' => 'user_is_admin'
         )
     );
@@ -129,17 +138,27 @@ function upload_csv_endpoint_callback()
     $wpdb->query($query);
 }
 
-function update_stories_last_update()
+function update_date_endpoint_callback()
 {
     $last_update = $_POST['last-update'];
 
     update_option('stories-last-update', $last_update);
 }
 
-function get_stories_last_update()
+function get_date_endpoint_callback()
 {
     $option = get_option('stories-last-update', '');
     $clean = stripslashes($option);
 
     return $clean;
+}
+
+function admin_list_endpoint_callback()
+{
+    global $wpdb;
+
+    $table = $wpdb->prefix . 'stories';
+    $results = $wpdb->get_results("SELECT id, name, url, is_new, is_phone FROM $table ORDER BY id DESC", ARRAY_A);
+
+    return $results;
 }

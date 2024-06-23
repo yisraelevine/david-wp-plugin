@@ -1,0 +1,213 @@
+<div id="stories-editor">
+    <div id="list-container">
+        <h2>סיפורים</h2>
+        <select id="list-categories">
+            <option class="list-category"></option>
+        </select>
+        <div id="list-items">
+            <div draggable="true" class="list-item"></div>
+        </div>
+    </div>
+    <div id="pupup-container">
+        <form id="item-edit-form">
+            <input type="hidden" id="id" name="id" />
+
+            <label for="name">שם</label>
+            <input type="text" id="name" name="name" />
+
+            <label for="url">קישור</label>
+            <input type="url" id="url" name="url" />
+
+            <label for="is_new">חדש</label>
+            <input type="checkbox" id="is_new" name="is_new" />
+
+            <label for="is_phone">איכות טלפון</label>
+            <input type="checkbox" id="is_phone" name="is_phone" />
+
+            <input type="submit" value="שמירה" />
+        </form>
+    </div>
+</div>
+<style>
+    #stories-editor {
+        --color-1: #99BBCC;
+        --color-2: #5586A4;
+        --color-3: #2B526A;
+        --size-1: 17px;
+        --size-2: 32px;
+    }
+
+    #list-container {
+        background-color: var(--color-1);
+        border: 2px solid var(--color-2);
+        border-radius: 4px;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    #list-container h2 {
+        margin: 0;
+        color: var(--color-3);
+        font-size: var(--size-2);
+        line-height: 1;
+    }
+
+    #list-categories {
+        background-color: var(--color-2);
+        color: #ffffff;
+        font-size: var(--size-1);
+        font-weight: 500;
+        width: 200px;
+    }
+
+    #list-items {
+        display: flex;
+        flex-wrap: wrap-reverse;
+        flex-direction: row-reverse;
+        border-radius: 4px;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        gap: var(--list-items-gap);
+        --list-items-gap: 2px;
+        --list-items-columns: 5;
+        width: 100%;
+        box-sizing: border-box;
+        user-select: none;
+    }
+
+    #list-items .list-item {
+        width: calc((100% - var(--list-items-gap) * (var(--list-items-columns) - 1)) / var(--list-items-columns));
+        padding: 8px;
+        font-size: var(--size-1);
+        box-sizing: border-box;
+        color: #ffffff;
+        background-color: var(--color-2);
+        border-radius: 4px;
+        letter-spacing: 1px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    #list-items .list-item.dragging {
+        background-color: var(--color-3);
+        pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+        #list-items {
+            --list-items-columns: 1;
+        }
+    }
+</style>
+<script>
+    const categories = {}
+    categories.container = document.querySelector('#list-categories')
+    categories.node = categories.container.querySelector('.list-category')
+    categories.update = (data) => {
+        const nodes = data.map(e => {
+            const clone = categories.node.cloneNode(true)
+            clone.textContent = (e.displayName ?? e.name)
+            clone.setAttribute('value', e.name)
+            return clone
+        })
+        categories.container.replaceChildren(...nodes)
+    }
+    categories.select = (name) => {
+        items.update(rows.filter(e => e.category == name))
+    }
+
+    const items = {}
+    items.container = document.querySelector('#list-items')
+    items.node = items.container.querySelector('.list-item')
+    items.update = (data) => {
+        const nodes = data.map((e, i) => {
+            const clone = items.node.cloneNode(true)
+            clone.textContent = e.name
+            clone.addEventListener('click', () => popup.load(e))
+            return clone
+        })
+        items.container.replaceChildren(...nodes.reverse())
+        items.container.scroll(0, -items.container.scrollHeight)
+    }
+
+    const popup = {}
+    popup.container = document.querySelector('#pupup-container')
+    popup.form = document.querySelector('#item-edit-form')
+    popup.load = (e) => {
+        popup.form.id.value = e.id
+        popup.form.name.value = e.name
+        popup.form.url.value = e.url
+        popup.form.is_new.checked = +e.is_new
+        popup.form.is_phone.checked = +e.is_phone
+    }
+
+    const categorizeRows = () => {
+        let newerTotal = 0
+        rows = rows.map(e => {
+            const category = [
+                { condition: +e.is_new, value: 'newest' },
+                { condition: +e.is_phone, value: 'phone' },
+                { condition: newerTotal < 50, value: 'newer' }
+            ].find(({ condition }) => condition)?.value || 'old'
+
+            if (category === 'newer') newerTotal++
+
+            return {
+                id: e.id,
+                name: e.name,
+                url: e.url,
+                is_new: e.is_new,
+                is_phone: e.is_phone,
+                category
+            }
+        })
+
+        const oldArray = rows.filter(e => e.category === 'old')
+        const count = oldArray.length > 0 && oldArray.length < 25 ? 1 : Math.round(oldArray.length / 50)
+        let extra = oldArray.length % 50
+        if (extra < 25) extra += 50
+        oldArray.forEach((e, i) => e.category = i < extra ? count : count - Math.ceil((i - extra + 1) / 50))
+
+        categories.update([
+            { name: 'newest', displayName: 'הכי חדש' },
+            { name: 'newer', displayName: 'חדש' },
+            { name: 'phone', displayName: 'איכות טלפון' },
+            ...Array.from({ length: count }, (_, i) => ({ name: count - i }))
+        ])
+    }
+
+    let rows
+    (async () => {
+        const res = await fetch('/wp-json/stories/v1/admin-list/', { headers: { 'X-WP-Nonce': sessionStorage.wpRestNonce } })
+        rows = await res.json()
+
+        categorizeRows()
+
+        categories.select('newest')
+    })()
+
+    categories.container.addEventListener('input', (event) => {
+        categories.select(event.target.value)
+    })
+
+    popup.form.addEventListener('submit', (event) => {
+        event.preventDefault()
+        const item = rows.find(e => e.id == event.target.id.value)
+        item.name = event.target.name.value
+        item.url = event.target.url.value
+        item.is_new = event.target.is_new.checked
+        item.is_phone = event.target.is_phone.checked
+
+        const category = categories.container.value
+
+        categorizeRows()
+
+        categories.container.value = category
+        categories.select(category)
+    })
+
+    new Draggable(items.container)
+</script>

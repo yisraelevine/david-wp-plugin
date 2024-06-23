@@ -19,6 +19,8 @@ function page_content()
         <?php
         include_once ('last-update.html');
         include_once ('csv-upload.html');
+        include_once ('draggable.html');
+        include_once ('list-editor.html');
         ?>
     </div>
     <?php

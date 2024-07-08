@@ -10,7 +10,8 @@ function create_table()
         name VARCHAR(200) NOT NULL,
         url VARCHAR(200) NOT NULL,
         is_new BIT NOT NULL,
-        is_phone BIT NOT NULL
+        is_phone BIT NOT NULL,
+        seq INT NOT NULL
     )";
 
     require_once (ABSPATH . 'wp-admin/includes/upgrade.php');

@@ -1,66 +1,89 @@
 <script>
-class Draggable {
-    constructor(container, callback = () => {}) {
-        this.container = container
-        this.callback = callback
+    class Draggable {
+        constructor(container, callback = () => { }) {
+            this.container = container
+            this.callback = callback
 
-        this.container.addEventListener('dragstart', (event) => {
-            if (event.target.parentElement !== this.container) return
+            this.container.addEventListener('dragstart', this.dragstart)
+            window.addEventListener('mousemove', this.mousemove)
+            window.addEventListener('touchmove', this.touchmove, { passive: false })
+            window.addEventListener('mouseup', this.end)
+            window.addEventListener('touchend', this.end)
+        }
+
+        dragstart = (event) => {
+            const { clientX, clientY, target } = event
+            if (!this.isChild(target)) return
             event.preventDefault()
-            event.target.classList.add('dragging')
-            const rect = event.target.getBoundingClientRect()
-            this.clientX = event.clientX
-            this.clientY = event.clientY
-            this.offsetX = event.clientX - rect.x
-            this.offsetY = event.clientY - rect.y
-            this.activeElement = event.target
-        })
-
-        window.addEventListener('mousemove', this.mousemove)
-        window.addEventListener('touchmove', this.touchmove, { passive: false })
-        window.addEventListener('mouseup', this.end)
-        window.addEventListener('touchend', this.end)
-    }
-
-    mousemove = (event) => {
-        if (!this.activeElement) return
-        this.drag(event.target, event.clientX, event.clientY)
-    }
-
-    touchmove = (event) => {
-        if (!this.activeElement) return
-        event.preventDefault()
-        const touches = event.targetTouches[0]
-        const target = document.elementFromPoint(touches.clientX, touches.clientY)
-        this.drag(target, touches.clientX, touches.clientY)
-    }
-
-    drag = (target, clientX, clientY) => {
-        if (target.parentElement === this.container && !target.isSameNode(this.activeElement)) {
-            const rect = target.getBoundingClientRect()
-            this.clientX = rect.x + this.offsetX
-            this.clientY = rect.y + this.offsetY
-            this.move(target)
-        }
-        this.activeElement.style.transform = `translate(${clientX - this.clientX}px, ${clientY - this.clientY}px)`
-    }
-
-    move(target) {
-        if (target.compareDocumentPosition(this.activeElement) & Node.DOCUMENT_POSITION_PRECEDING) {
-            target = target.nextElementSibling
+            target.classList.add('dragging')
+            const { x, y } = target.getBoundingClientRect()
+            this.setOffset(clientX - x, clientY - y)
+            this.setBase(target)
+            this.setActive(target)
         }
 
-        const scrollY = window.scrollY
-        this.container.insertBefore(this.activeElement, target)
-        if (scrollY !== window.scrollY) window.scrollBy(0, scrollY - window.scrollY)
-    }
+        mousemove = (event) => {
+            if (!this.activeElement) return
+            this.drag(event.target, event.clientX, event.clientY)
+        }
 
-    end = () => {
-        if (!this.activeElement) return
-        this.activeElement.classList.remove('dragging')
-        this.activeElement.style.transform = ''
-        this.activeElement = undefined
-        this.callback()
+        touchmove = (event) => {
+            if (!this.activeElement) return
+            event.preventDefault()
+            const touches = event.targetTouches[0]
+            const target = document.elementFromPoint(touches.clientX, touches.clientY)
+            this.drag(target, touches.clientX, touches.clientY)
+        }
+
+        drag = (target, clientX, clientY) => {
+            if (this.isChild(target)) {
+                this.setBase(target)
+                this.move(target)
+            }
+            this.activeElement.style.transform = `translate(${clientX - this.baseX}px, ${clientY - this.baseY}px)`
+        }
+
+        move(target) {
+            const isFollowing = target.compareDocumentPosition(this.activeElement) === 4
+            this.keepScrollPosition(() => this.container.insertBefore(this.activeElement, isFollowing ? target : target.nextElementSibling))
+            this.setTarget(target)
+        }
+
+        end = () => {
+            if (!this.activeElement) return
+            this.activeElement.classList.remove('dragging')
+            this.activeElement.style.transform = ''
+            if (this.container.children[this.activeElementIndex] !== this.activeElement) this.callback(this.activeElement, this.targetElement)
+            this.activeElement = null
+            this.targetElement = null
+        }
+
+        keepScrollPosition = (callback) => {
+            const scrollY = window.scrollY
+            callback()
+            if (scrollY !== window.scrollY) window.scrollBy(0, scrollY - window.scrollY)
+        }
+
+        isChild = (element) => element.parentElement === this.container
+
+        setBase = (element) => {
+            const { x, y } = element.getBoundingClientRect()
+            this.baseX = x + this.offsetX
+            this.baseY = y + this.offsetY
+        }
+
+        setOffset = (x, y) => {
+            this.offsetX = x
+            this.offsetY = y
+        }
+
+        setActive = (element) => {
+            this.activeElement = element
+            this.activeElementIndex = Array.from(this.container.children).indexOf(element)
+        }
+
+        setTarget = (element) => {
+            this.targetElement = element
+        }
     }
-}
 </script>

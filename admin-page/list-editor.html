@@ -1,12 +1,14 @@
+<input type="file" id="csvFileInput" accept=".csv" />
 <div id="stories-editor">
     <div id="list-container">
         <h2>סיפורים</h2>
-        <select id="list-categories">
-            <option class="list-category"></option>
-        </select>
+        <div id="list-categories">
+            <div class="list-category"></div>
+        </div>
         <div id="list-items">
             <div draggable="true" class="list-item"></div>
         </div>
+        <div id="list-save-status"></div>
     </div>
     <div id="pupup-container">
         <form id="item-edit-form">
@@ -25,6 +27,7 @@
             <input type="checkbox" id="is_phone" name="is_phone" />
 
             <input type="submit" value="שמירה" />
+            <input type="reset" value="ביטול">
         </form>
     </div>
 </div>
@@ -46,6 +49,7 @@
         flex-direction: column;
         align-items: center;
         gap: 15px;
+        position: relative;
     }
 
     #list-container h2 {
@@ -56,11 +60,27 @@
     }
 
     #list-categories {
-        background-color: var(--color-2);
-        color: #ffffff;
+        display: flex;
+        gap: 2px;
+        overflow: auto;
+        width: 100%;
+    }
+
+    #list-categories .list-category {
+        padding: 8px;
+        min-width: 160px;
         font-size: var(--size-1);
-        font-weight: 500;
-        width: 200px;
+        box-sizing: border-box;
+        color: #ffffff;
+        background-color: var(--color-2);
+        border-radius: 4px;
+        letter-spacing: 1px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    #list-categories .list-category.selected {
+        background-color: var(--color-3);
     }
 
     #list-items {
@@ -101,113 +121,198 @@
             --list-items-columns: 1;
         }
     }
+
+    #list-items .list-item:not(.dragging) {
+        transition: transform 0.3s ease, background-color 0.2s 0.3s ease;
+    }
+
+    #list-save-status {
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: var(--color-3);
+        font-size: 19px;
+        padding: 6px 8px;
+    }
+
+    #pupup-container {
+        display: none;
+    }
+
+    #pupup-container.show {
+        z-index: 999999;
+        padding: 15px;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #00000052;
+        box-sizing: border-box;
+    }
+
+    #item-edit-form {
+        width: 100%;
+        max-width: 500px;
+        background-color: white;
+        padding: 20px;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        box-shadow: 0 12px 32px #00000026;
+    }
 </style>
 <script>
+    Array.prototype.move = function (callback1, callback2) {
+        const index1 = this.findIndex(callback1)
+        const index2 = this.findIndex(callback2)
+        if (index1 === -1 || index2 === -1) return
+        const [element] = this.splice(index1, 1)
+        this.splice(index2, 0, element)
+    }
+
+    const savingStatus = document.querySelector('#list-save-status')
+
+    const stories = {}
+    stories.get = async () => {
+        const res = await fetch('/wp-json/stories/v1/admin-list/', { headers: { 'X-WP-Nonce': sessionStorage.wpRestNonce } })
+        stories.data = (await res.json()).sort((a, b) => a.seq - b.seq)
+    }
+    stories.set = async () => {
+        savingStatus.textContent = 'שומר...'
+        await fetch('/wp-json/stories/v1/upload-list/', {
+            method: 'POST',
+            body: JSON.stringify(stories.data),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-WP-Nonce': sessionStorage.wpRestNonce
+            }
+        })
+        savingStatus.textContent = 'נשמר ✓'
+    }
+    stories.categorize = () => {
+        let newerTotal = 0
+        stories.data = stories.data.map((e, i) => {
+            const category = [
+                { condition: +e.is_new, value: 'הכי חדש' },
+                { condition: +e.is_phone, value: 'איכות טלפון' },
+                { condition: newerTotal < 50, value: 'חדש' }
+            ].find(({ condition }) => condition)?.value
+
+            if (category === 'חדש') newerTotal++
+
+            return { ...e, category, seq: i + 1 }
+        })
+
+        const oldArray = stories.data.filter(e => !e.category)
+        const count = (oldArray.length < 25) || Math.round(oldArray.length / 50)
+        let extra = oldArray.length % 50
+        if (extra < 25) extra += 50
+        oldArray.forEach((e, i) => e.category = count - (i < extra ? 0 : Math.ceil((i - extra + 1) / 50)))
+
+        categories.update([
+            'הכי חדש',
+            'חדש',
+            'איכות טלפון',
+            ...Array.from({ length: count }, (_, i) => count - i)
+        ])
+        categories.select()
+        stories.set()
+    }
+
     const categories = {}
     categories.container = document.querySelector('#list-categories')
-    categories.node = categories.container.querySelector('.list-category')
+    categories.tamplate = categories.container.querySelector('.list-category')
     categories.update = (data) => {
         const nodes = data.map(e => {
-            const clone = categories.node.cloneNode(true)
-            clone.textContent = (e.displayName ?? e.name)
-            clone.setAttribute('value', e.name)
+            const clone = categories.tamplate.cloneNode(true)
+            clone.textContent = e
+            clone.addEventListener('click', (event) => categories.select(e))
             return clone
         })
         categories.container.replaceChildren(...nodes)
+        categories.items = data
     }
-    categories.select = (name) => {
-        items.update(rows.filter(e => e.category == name))
+    categories.select = (name = (categories.selected || categories.items[0])) => {
+        items.update(stories.data.filter(e => e.category == name))
+        for (const element of categories.container.querySelectorAll('.list-category')) {
+            element.classList.toggle('selected', element.textContent == name)
+        }
+        categories.selected = name
     }
 
     const items = {}
     items.container = document.querySelector('#list-items')
-    items.node = items.container.querySelector('.list-item')
+    items.tamplate = items.container.querySelector('.list-item')
     items.update = (data) => {
-        const nodes = data.map((e, i) => {
-            const clone = items.node.cloneNode(true)
+        const nodes = data.map(e => {
+            const clone = items.tamplate.cloneNode(true)
             clone.textContent = e.name
-            clone.addEventListener('click', () => popup.load(e))
+            clone.dataset.id = e.id
+            clone.addEventListener('click', () => items.select(e))
             return clone
         })
         items.container.replaceChildren(...nodes.reverse())
         items.container.scroll(0, -items.container.scrollHeight)
     }
+    items.select = (e) => {
+        popup.update(e)
+        popup.display(true)
+    }
 
     const popup = {}
     popup.container = document.querySelector('#pupup-container')
     popup.form = document.querySelector('#item-edit-form')
-    popup.load = (e) => {
+    popup.update = (e) => {
         popup.form.id.value = e.id
         popup.form.name.value = e.name
         popup.form.url.value = e.url
         popup.form.is_new.checked = +e.is_new
         popup.form.is_phone.checked = +e.is_phone
     }
-
-    const categorizeRows = () => {
-        let newerTotal = 0
-        rows = rows.map(e => {
-            const category = [
-                { condition: +e.is_new, value: 'newest' },
-                { condition: +e.is_phone, value: 'phone' },
-                { condition: newerTotal < 50, value: 'newer' }
-            ].find(({ condition }) => condition)?.value || 'old'
-
-            if (category === 'newer') newerTotal++
-
-            return {
-                id: e.id,
-                name: e.name,
-                url: e.url,
-                is_new: e.is_new,
-                is_phone: e.is_phone,
-                category
-            }
-        })
-
-        const oldArray = rows.filter(e => e.category === 'old')
-        const count = oldArray.length > 0 && oldArray.length < 25 ? 1 : Math.round(oldArray.length / 50)
-        let extra = oldArray.length % 50
-        if (extra < 25) extra += 50
-        oldArray.forEach((e, i) => e.category = i < extra ? count : count - Math.ceil((i - extra + 1) / 50))
-
-        categories.update([
-            { name: 'newest', displayName: 'הכי חדש' },
-            { name: 'newer', displayName: 'חדש' },
-            { name: 'phone', displayName: 'איכות טלפון' },
-            ...Array.from({ length: count }, (_, i) => ({ name: count - i }))
-        ])
-    }
-
-    let rows
-    (async () => {
-        const res = await fetch('/wp-json/stories/v1/admin-list/', { headers: { 'X-WP-Nonce': sessionStorage.wpRestNonce } })
-        rows = await res.json()
-
-        categorizeRows()
-
-        categories.select('newest')
-    })()
-
-    categories.container.addEventListener('input', (event) => {
-        categories.select(event.target.value)
-    })
+    popup.display = (show) => popup.container.classList.toggle('show', show)
 
     popup.form.addEventListener('submit', (event) => {
         event.preventDefault()
-        const item = rows.find(e => e.id == event.target.id.value)
+        const item = stories.data.find(e => e.id == event.target.id.value)
         item.name = event.target.name.value
         item.url = event.target.url.value
         item.is_new = event.target.is_new.checked
         item.is_phone = event.target.is_phone.checked
 
-        const category = categories.container.value
+        popup.display(false)
 
-        categorizeRows()
-
-        categories.container.value = category
-        categories.select(category)
+        stories.categorize()
     })
 
-    new Draggable(items.container)
+    popup.form.addEventListener('reset', (event) => popup.display(false))
+
+    const drbl = new Draggable(items.container, (activeElement, targetElement) => {
+        stories.data.move(e => e.id === activeElement.dataset.id, e => e.id === targetElement.dataset.id)
+        setTimeout(e => stories.categorize(), 500)
+    })
+
+    document.getElementById('csvFileInput').addEventListener('input', (event) => {
+        const file = event.target.files[0]
+        if (!file) return
+        const reader = new FileReader()
+        reader.onload = (e) => {
+            stories.data = e.target.result.replace(/\r/g, '').split('\n').map(row => {
+                row = row.split(',')
+                return { id: row[0], name: row[1], url: row[2], is_new: row[3], is_phone: row[4] }
+            })
+            stories.categorize()
+        }
+        reader.readAsText(file)
+        event.target.value = ''
+    });
+
+    (async () => {
+        await stories.get()
+        stories.categorize()
+    })()
 </script>

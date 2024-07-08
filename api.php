@@ -23,10 +23,10 @@ function register_list_endpoint()
     );
     register_rest_route(
         'stories/v1',
-        '/upload-csv/',
+        '/upload-list/',
         array(
             'methods' => 'POST',
-            'callback' => 'upload_csv_endpoint_callback',
+            'callback' => 'upload_list_endpoint_callback',
             'permission_callback' => 'user_is_admin'
         )
     );
@@ -78,7 +78,7 @@ function list_endpoint_callback()
     global $wpdb;
 
     $table = $wpdb->prefix . 'stories';
-    $results = $wpdb->get_results("SELECT id, name, is_new, is_phone FROM $table ORDER BY id DESC", ARRAY_A);
+    $results = $wpdb->get_results("SELECT id, name, is_new, is_phone, seq FROM $table", ARRAY_A);
 
     $option = get_option('stories-last-update', '');
     $clean = stripslashes($option);
@@ -102,39 +102,29 @@ function url_endpoint_callback(WP_REST_Request $req)
     return (string) $var;
 }
 
-function upload_csv_endpoint_callback()
+function upload_list_endpoint_callback()
 {
     global $wpdb;
     $table = $wpdb->prefix . 'stories';
 
-    $path = $_FILES['csv_file']['tmp_name'];
-    $handle = fopen($path, "r");
+    $rows = json_decode(file_get_contents("php://input"));
 
-    $values = [];
-    while ($data = fgetcsv($handle, 500)) {
-        if (count($data) != 5) {
-            continue;
-        }
-
-        $id = $data[0];
-        $name = $data[1];
-        $url = urldecode($data[2]);
-        $is_new = (bool) $data[3];
-        $is_phone = (bool) $data[4];
-        $value = $wpdb->prepare("(%d, %s, %s, %d, %d)", $id, $name, $url, $is_new, $is_phone);
-        $values[] = $value;
-    }
-
-    fclose($handle);
-
-    if (empty($values)) {
-        return;
-    }
+    $rows = array_map(function($row) {
+        global $wpdb;
+        $id = $row->id;
+        $name = $row->name;
+        $url = urldecode($row->url);
+        $is_new = (bool) $row->is_new;
+        $is_phone = (bool) $row->is_phone;
+        $seq = $row->seq;
+        $value = $wpdb->prepare("(%d, %s, %s, %d, %d, %d)", $id, $name, $url, $is_new, $is_phone, $seq);
+        return $value;
+    }, $rows);
 
     $wpdb->query("DELETE FROM $table");
 
-    $values = implode(", ", array_reverse($values));
-    $query = "INSERT INTO $table (id, name, url, is_new, is_phone) VALUES $values";
+    $rows = implode(", ", $rows);
+    $query = "INSERT INTO $table (id, name, url, is_new, is_phone, seq) VALUES $rows";
     $wpdb->query($query);
 }
 
@@ -158,7 +148,7 @@ function admin_list_endpoint_callback()
     global $wpdb;
 
     $table = $wpdb->prefix . 'stories';
-    $results = $wpdb->get_results("SELECT id, name, url, is_new, is_phone FROM $table ORDER BY id DESC", ARRAY_A);
+    $results = $wpdb->get_results("SELECT id, name, url, is_new, is_phone, seq FROM $table", ARRAY_A);
 
     return $results;
 }

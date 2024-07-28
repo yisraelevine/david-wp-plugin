@@ -81,6 +81,7 @@
 
     #list-categories .list-category.selected {
         background-color: var(--color-3);
+        pointer-events: none;
     }
 
     #list-items {
@@ -96,6 +97,7 @@
         width: 100%;
         box-sizing: border-box;
         user-select: none;
+        position: relative;
     }
 
     #list-items .list-item {
@@ -244,6 +246,27 @@
         }
         categories.selected = name
     }
+    class Categories {
+        constructor(container) {
+            this.container = container
+            this.tamplate = container.firstChild
+        }
+        createNodes = (data) => data.map(e => {
+            const clone = this.tamplate.cloneNode(true)
+            clone.textContent = e
+            clone.addEventListener('click', (event) => this.select(e))
+            return clone
+        })
+        set = (data) => this.container.replaceChildren(...this.createNodes(this.items = data))
+        select = (name = (this.selected || this.items[0])) => {
+            this.selectedNode.classList.remove('selected')
+            this.selectedNode = Array.from(this.container.children).find(e => e.textContent == name)
+            this.selectedNode.classList.add('selected')
+            items.update(stories.data.filter(e => e.category == name))
+            this.selected = name
+        }
+    }
+
 
     const items = {}
     items.container = document.querySelector('#list-items')
@@ -291,7 +314,9 @@
 
     popup.form.addEventListener('reset', (event) => popup.display(false))
 
-    const drbl = new Draggable(items.container, (activeElement, targetElement) => {
+    const drbl = new Draggable(items.container, categories.container, (element) => {
+        categories.select(element.textContent)
+    }, (activeElement, targetElement) => {
         stories.data.move(e => e.id === activeElement.dataset.id, e => e.id === targetElement.dataset.id)
         setTimeout(e => stories.categorize(), 500)
     })

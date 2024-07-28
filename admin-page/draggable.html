@@ -1,7 +1,9 @@
 <script>
     class Draggable {
-        constructor(container, callback = () => { }) {
+        constructor(container, ccontainer, selectCategory, callback = () => { }) {
             this.container = container
+            this.ccontainer = ccontainer
+            this.selectCategory = selectCategory
             this.callback = callback
 
             this.container.addEventListener('dragstart', this.dragstart)
@@ -13,7 +15,7 @@
 
         dragstart = (event) => {
             const { clientX, clientY, target } = event
-            if (!this.isChild(target)) return
+            if (!this.isDraggable(target)) return
             event.preventDefault()
             target.classList.add('dragging')
             const { x, y } = target.getBoundingClientRect()
@@ -36,9 +38,27 @@
         }
 
         drag = (target, clientX, clientY) => {
-            if (this.isChild(target)) {
+            if (this.isCategory(target)) {
+                this.selectCategory(target)
+                if (!this.initialCategory) this.initialCategory = target
+                const isBefore = this.initialCategory.compareDocumentPosition(target) === 4
+                this.setBase(this.container)
+                this.activeElement.style = 'position: absolute; top: 0; left: 0;'
+                this.movingItem = this.container[isBefore ? 'lastChild' : 'firstChild']
+                this.keepScrollPosition(() => this.container.insertBefore(this.activeElement, this.movingItem))
+            }
+            if (this.movingItem && target !== this.container) {
+                this.movingItem.style.display = ''
+                this.activeElement.style = 'position: absolute; top: 0; left: 0;'
+                this.keepScrollPosition(() => this.container.insertBefore(this.activeElement, this.movingItem))
+                this.setBase(this.container)
+            } else if (this.isDraggable(target)) {
                 this.setBase(target)
                 this.move(target)
+                if (this.movingItem) {
+                    this.movingItem.style.display = 'none'
+                    this.activeElement.style = ''
+                }
             }
             this.activeElement.style.transform = `translate(${clientX - this.baseX}px, ${clientY - this.baseY}px)`
         }
@@ -64,7 +84,9 @@
             if (scrollY !== window.scrollY) window.scrollBy(0, scrollY - window.scrollY)
         }
 
-        isChild = (element) => element.parentElement === this.container
+        isDraggable = (element) => element.parentElement === this.container
+
+        isCategory = (element) => element.parentElement === this.ccontainer
 
         setBase = (element) => {
             const { x, y } = element.getBoundingClientRect()

@@ -1,0 +1,8 @@
+baseCategory = current category
+switch targetCategory:
+    targetCategory is before baseCategory:
+        remove last element from DOM
+        (we want to remove the first but becouse it is backwords we are removing the last)
+    targetCategory is after baseCategory:
+        remove first element from DOM
+        (we want to remove the last but becouse it is backwords we are removing the first)

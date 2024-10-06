@@ -13,16 +13,16 @@ function admin_page()
 
 function page_content()
 {
-    ?>
+?>
     <div class="wrap" dir="rtl">
         <h2>ניהול סיפורים</h2>
-        <?php
-        include_once ('last-update.html');
-        include_once ('draggable.html');
-        include_once ('list-editor.html');
-        ?>
+        <?php include_once('last-update.html'); ?>
+        <script>
+            <?php include_once('draggable.js'); ?>
+        </script>
+        <?php include_once('list-editor.html'); ?>
     </div>
-    <?php
+<?php
 }
 
 add_action('admin_menu', 'admin_page');

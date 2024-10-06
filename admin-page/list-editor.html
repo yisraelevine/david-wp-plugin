@@ -319,7 +319,7 @@
     }, (activeElement, targetElement) => {
         stories.data.move(e => e.id === activeElement.dataset.id, e => e.id === targetElement.dataset.id)
         setTimeout(e => stories.categorize(), 500)
-    })
+    }, () => categories.container.querySelector('.selected'))
 
     document.getElementById('csvFileInput').addEventListener('input', (event) => {
         const file = event.target.files[0]
